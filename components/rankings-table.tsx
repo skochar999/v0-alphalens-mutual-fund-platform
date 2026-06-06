@@ -6,7 +6,9 @@ import { ScoreBadge } from '@/components/score-badge'
 import { Spinner } from '@/components/spinner'
 import { fmtPct, fmtRate, fmtTer } from '@/lib/format'
 
-type SortKey = 'score' | 'aret' | 'hrate' | 'pickAnn' | 'ter' | 'ret' | 'name'
+type SortKey = 'score' | 'aret' | 'hrate' | 'pickAnn' | 'ter' | 'ret' | 'name' | 'amc'
+
+const PAGE_SIZE = 25
 
 const columns: {
   key: SortKey
@@ -15,6 +17,7 @@ const columns: {
   hideMobile?: boolean
 }[] = [
   { key: 'name', label: 'Fund Name', numeric: false },
+  { key: 'amc', label: 'AMC', numeric: false, hideMobile: true },
   { key: 'score', label: 'Score', numeric: true },
   { key: 'aret', label: 'Vs Bmk/yr', numeric: true, hideMobile: true },
   { key: 'hrate', label: 'Consistency', numeric: true, hideMobile: true },
@@ -48,14 +51,16 @@ export function RankingsTable({
   const [minScore, setMinScore] = useState(0)
   const [sortKey, setSortKey] = useState<SortKey>('score')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+  const [page, setPage] = useState(1)
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
       setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))
     } else {
       setSortKey(key)
-      setSortDir(key === 'name' || key === 'ter' ? 'asc' : 'desc')
+      setSortDir(key === 'name' || key === 'amc' || key === 'ter' ? 'asc' : 'desc')
     }
+    setPage(1)
   }
 
   const filtered = useMemo(() => {
@@ -71,6 +76,8 @@ export function RankingsTable({
       let cmp: number
       if (sortKey === 'name') {
         cmp = a.name.localeCompare(b.name)
+      } else if (sortKey === 'amc') {
+        cmp = a.amc.localeCompare(b.amc)
       } else {
         cmp = nullLast(a[sortKey] as number | null) - nullLast(b[sortKey] as number | null)
       }
@@ -78,6 +85,13 @@ export function RankingsTable({
     })
     return rows
   }, [funds, search, cat, amc, minScore, sortKey, sortDir])
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageRows = filtered.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  )
 
   return (
     <section id="rankings" className="scroll-mt-16">
@@ -103,7 +117,10 @@ export function RankingsTable({
               id="search"
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1)
+              }}
               placeholder="Search by fund or AMC…"
               className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none ring-primary/30 placeholder:text-muted-foreground focus:ring-2"
             />
@@ -111,7 +128,10 @@ export function RankingsTable({
           <select
             aria-label="Filter by category"
             value={cat}
-            onChange={(e) => setCat(e.target.value)}
+            onChange={(e) => {
+              setCat(e.target.value)
+              setPage(1)
+            }}
             className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
           >
             <option value="all">All categories</option>
@@ -124,7 +144,10 @@ export function RankingsTable({
           <select
             aria-label="Filter by AMC"
             value={amc}
-            onChange={(e) => setAmc(e.target.value)}
+            onChange={(e) => {
+              setAmc(e.target.value)
+              setPage(1)
+            }}
             className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
           >
             <option value="all">All AMCs</option>
@@ -148,7 +171,10 @@ export function RankingsTable({
               max={100}
               step={5}
               value={minScore}
-              onChange={(e) => setMinScore(Number(e.target.value))}
+              onChange={(e) => {
+                setMinScore(Number(e.target.value))
+                setPage(1)
+              }}
               className="h-1.5 flex-1 cursor-pointer accent-primary"
             />
             <span className="w-7 text-right text-sm font-semibold tabular-nums text-foreground">
@@ -157,8 +183,15 @@ export function RankingsTable({
           </div>
         </div>
 
+        {/* Compliance banner */}
+        <div className="mt-6 rounded-lg border border-border bg-secondary/60 px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
+          Mutual Fund investments are subject to market risks. Past performance is not indicative
+          of future results. We are a registered Mutual Fund Distributor. This is not investment
+          advice.
+        </div>
+
         {/* Table */}
-        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
           {loading ? (
             <Spinner label="Fetching fund rankings…" />
           ) : filtered.length === 0 ? (
@@ -198,7 +231,7 @@ export function RankingsTable({
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map((f) => (
+                  {pageRows.map((f) => (
                     <tr
                       key={f.code}
                       onClick={() => onSelect(f)}
@@ -215,6 +248,9 @@ export function RankingsTable({
                         <div className="mt-0.5 text-xs text-muted-foreground">
                           {f.amc} · {f.cat}
                         </div>
+                      </td>
+                      <td className="hidden px-3 py-3 align-top text-foreground md:table-cell">
+                        {f.amc}
                       </td>
                       <td className="px-3 py-3 text-right">
                         <ScoreBadge score={f.score} />
@@ -251,6 +287,39 @@ export function RankingsTable({
             </div>
           )}
         </div>
+
+        {/* Pagination */}
+        {!loading && filtered.length > 0 && (
+          <div className="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p className="text-xs text-muted-foreground">
+              Showing{' '}
+              <span className="font-medium text-foreground">
+                {(currentPage - 1) * PAGE_SIZE + 1}–
+                {Math.min(currentPage * PAGE_SIZE, filtered.length)}
+              </span>{' '}
+              of <span className="font-medium text-foreground">{filtered.length}</span> funds
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage <= 1}
+                className="rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Previous
+              </button>
+              <span className="text-sm tabular-nums text-muted-foreground">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage >= totalPages}
+                className="rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )

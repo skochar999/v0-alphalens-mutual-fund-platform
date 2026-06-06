@@ -11,8 +11,11 @@ import {
 } from '@/lib/types'
 import { Nav } from '@/components/nav'
 import { Hero } from '@/components/hero'
+import { Calculator } from '@/components/calculator'
 import { HowItWorks } from '@/components/how-it-works'
+import { DoesItWork } from '@/components/does-it-work'
 import { RankingsTable } from '@/components/rankings-table'
+import { Methodology } from '@/components/methodology'
 import { FundDrawer } from '@/components/fund-drawer'
 import { Footer } from '@/components/footer'
 
@@ -28,7 +31,9 @@ export default function Page() {
     <main id="top" className="min-h-screen bg-background text-foreground">
       <Nav />
       <Hero stats={stats ?? null} loading={statsLoading} />
+      <Calculator />
       <HowItWorks />
+      <DoesItWork />
       <RankingsTable
         funds={funds ?? []}
         categories={categories ?? []}
@@ -36,6 +41,7 @@ export default function Page() {
         loading={fundsLoading}
         onSelect={setSelected}
       />
+      <Methodology />
       <Footer />
       <FundDrawer fund={selected} onClose={() => setSelected(null)} />
     </main>

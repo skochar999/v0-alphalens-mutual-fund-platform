@@ -4,6 +4,19 @@ export function fmtPct(v: number | null, digits = 1): string {
   return `${sign}${v.toFixed(digits)}%`
 }
 
+// Format a rupee amount into lakh/crore notation
+export function fmtRupees(v: number): string {
+  if (!Number.isFinite(v)) return '—'
+  const abs = Math.abs(v)
+  if (abs >= 1e7) {
+    return `₹${(v / 1e7).toFixed(2)} Cr`
+  }
+  if (abs >= 1e5) {
+    return `₹${(v / 1e5).toFixed(2)} L`
+  }
+  return `₹${Math.round(v).toLocaleString('en-IN')}`
+}
+
 export function fmtNum(v: number | null, digits = 1): string {
   if (v === null || v === undefined || Number.isNaN(v)) return '—'
   return v.toFixed(digits)

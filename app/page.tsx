@@ -44,7 +44,7 @@ export default function Page() {
         loadedAt={health?.loaded_at ?? null}
         onSelect={setSelected}
       />
-      <Methodology />
+      <Methodology methodology={stats?.methodology ?? null} />
       <Footer />
       <FundDrawer fund={selected} onClose={() => setSelected(null)} />
     </main>

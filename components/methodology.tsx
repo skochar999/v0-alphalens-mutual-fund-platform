@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
+import type { Methodology as MethodologyData } from '@/lib/types'
 
 const faqs = [
   {
@@ -26,8 +27,13 @@ const faqs = [
   },
 ]
 
-export function Methodology() {
+export function Methodology({
+  methodology,
+}: {
+  methodology?: MethodologyData | null
+}) {
   const [open, setOpen] = useState<number | null>(0)
+  const [detailOpen, setDetailOpen] = useState(false)
 
   return (
     <section id="methodology" className="border-b border-border bg-card scroll-mt-16">
@@ -66,6 +72,38 @@ export function Methodology() {
             )
           })}
         </div>
+
+        {methodology && (
+          <div className="mt-4 overflow-hidden rounded-xl border border-border bg-background">
+            <button
+              onClick={() => setDetailOpen((v) => !v)}
+              aria-expanded={detailOpen}
+              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-accent/40"
+            >
+              <span className="font-medium text-foreground">Detailed methodology</span>
+              <ChevronDown
+                className={`size-5 shrink-0 text-muted-foreground transition-transform ${
+                  detailOpen ? 'rotate-180' : ''
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+            {detailOpen && (
+              <div className="px-5 pb-5">
+                <h3 className="text-sm font-semibold text-foreground">What we cover</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {methodology.universe}
+                </p>
+                <h3 className="mt-4 text-sm font-semibold text-foreground">
+                  Stock-picking rating
+                </h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {methodology.stock_picking_history}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   )

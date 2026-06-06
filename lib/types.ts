@@ -23,6 +23,11 @@ export interface Fund {
   pickHit?: number | null
 }
 
+export interface Methodology {
+  universe: string
+  stock_picking_history: string
+}
+
 export interface Stats {
   n_funds: number
   pct_pos_alpha: number
@@ -30,6 +35,7 @@ export interface Stats {
   avg_alpha_ann: number
   overall_beat: number
   as_of: string
+  methodology?: Methodology
 }
 
 export interface Category {

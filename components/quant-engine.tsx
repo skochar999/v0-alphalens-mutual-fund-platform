@@ -15,10 +15,17 @@ function rand(min: number, max: number) {
   return min + Math.random() * (max - min)
 }
 
+// Compact large numbers, e.g. 4_350_000 -> "4.35M"
+function fmtCompact(n: number) {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
+  return `${n}`
+}
+
 export function QuantEngine() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [readout, setReadout] = useState({
-    regs: 0,
+    points: 0,
     r2: 0.0,
     factors: 0,
     funds: 0,
@@ -213,11 +220,13 @@ export function QuantEngine() {
 
     // HUD updates (decoupled from rAF to limit React renders)
     let funds = 0
+    let dataPoints = 4_200_000
     const hud = setInterval(() => {
       funds = Math.min(347, funds + Math.round(rand(3, 11)))
+      dataPoints += Math.round(rand(28000, 96000))
       const r2 = 0.82 + Math.sin(Date.now() / 2200) * 0.06
       setReadout({
-        regs: 1200 + Math.round(rand(0, 420)),
+        points: dataPoints,
         r2,
         factors: 4,
         funds,
@@ -251,33 +260,21 @@ export function QuantEngine() {
 
   return (
     <div className="animate-hero-in relative overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-950 shadow-xl">
-      {/* top bar */}
-      <div className="flex items-center justify-between border-b border-slate-700/50 px-4 py-2.5">
-        <div className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
-          <span className="ml-2 font-mono text-xs text-slate-400">
-            alphalens · factor-engine
-          </span>
-        </div>
-        <span className="flex items-center gap-1.5 font-mono text-xs text-emerald-400">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-          LIVE
-        </span>
-      </div>
-
       {/* canvas */}
       <div className="relative">
         <canvas ref={canvasRef} className="block h-64 w-full sm:h-72" />
         <div className="pointer-events-none absolute left-3 top-3 font-mono text-[10px] uppercase tracking-wider text-slate-500">
           excess return vs market beta
         </div>
+        <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-slate-950/70 px-2 py-0.5 font-mono text-[10px] text-emerald-400 backdrop-blur">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+          LIVE
+        </span>
       </div>
 
       {/* HUD readouts */}
       <div className="grid grid-cols-3 gap-px border-t border-slate-700/50 bg-slate-700/40">
-        <Metric label="regressions/sec" value={readout.regs.toLocaleString('en-IN')} tone="text-sky-300" />
+        <Metric label="data points analyzed" value={fmtCompact(readout.points)} tone="text-sky-300" />
         <Metric label="model R²" value={readout.r2.toFixed(3)} tone="text-emerald-300" />
         <Metric label="funds analyzed" value={`${readout.funds}/347`} tone="text-slate-100" />
       </div>

@@ -1,5 +1,6 @@
 import type { Stats } from '@/lib/types'
 import { Spinner } from '@/components/spinner'
+import { QuantEngine } from '@/components/quant-engine'
 
 function StatPill({
   value,
@@ -72,15 +73,9 @@ export function Hero({
         </div>
 
         <div className="relative">
-          <div className="animate-hero-in overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-            <img
-              src="/images/alpha-scatter.png"
-              alt="Scatter plot of 347 mutual funds by excess return; most cluster around zero in gray while a rare few show genuine positive alpha in green"
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <QuantEngine />
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            Every dot is a fund&apos;s excess return. Genuine alpha (green) is rare.
+            Our engine re-fits factor models across all 347 funds in real time.
           </p>
         </div>
       </div>

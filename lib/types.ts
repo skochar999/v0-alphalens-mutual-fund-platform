@@ -42,6 +42,13 @@ export interface Amc {
   count: number
 }
 
+export interface Health {
+  status: string
+  funds: number
+  loaded_at: string
+  data_dir: string
+}
+
 const BASE = 'https://alphalens-production-21b7.up.railway.app'
 
 async function getJson(path: string) {
@@ -65,4 +72,8 @@ export async function fetchCategories(): Promise<Category[]> {
 
 export async function fetchAmcs(): Promise<Amc[]> {
   return getJson('/api/amcs')
+}
+
+export async function fetchHealth(): Promise<Health> {
+  return getJson('/health')
 }

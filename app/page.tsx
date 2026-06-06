@@ -6,6 +6,7 @@ import {
   fetchAmcs,
   fetchCategories,
   fetchFunds,
+  fetchHealth,
   fetchStats,
   type Fund,
 } from '@/lib/types'
@@ -24,6 +25,7 @@ export default function Page() {
   const { data: stats, isLoading: statsLoading } = useSWR('stats', fetchStats)
   const { data: categories } = useSWR('categories', fetchCategories)
   const { data: amcs } = useSWR('amcs', fetchAmcs)
+  const { data: health } = useSWR('health', fetchHealth)
 
   const [selected, setSelected] = useState<Fund | null>(null)
 
@@ -39,6 +41,7 @@ export default function Page() {
         categories={categories ?? []}
         amcs={amcs ?? []}
         loading={fundsLoading}
+        loadedAt={health?.loaded_at ?? null}
         onSelect={setSelected}
       />
       <Methodology />

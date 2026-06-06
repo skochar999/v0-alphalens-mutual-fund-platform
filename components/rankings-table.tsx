@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import type { Amc, Category, Fund } from '@/lib/types'
 import { ScoreBadge } from '@/components/score-badge'
 import { Spinner } from '@/components/spinner'
-import { fmtPct, fmtRate, fmtTer } from '@/lib/format'
+import { fmtAsOf, fmtPct, fmtRate, fmtTer } from '@/lib/format'
 
 type SortKey = 'score' | 'aret' | 'hrate' | 'pickAnn' | 'ter' | 'ret' | 'name' | 'amc'
 
@@ -37,12 +37,14 @@ export function RankingsTable({
   categories,
   amcs,
   loading,
+  loadedAt,
   onSelect,
 }: {
   funds: Fund[]
   categories: Category[]
   amcs: Amc[]
   loading: boolean
+  loadedAt: string | null
   onSelect: (fund: Fund) => void
 }) {
   const [search, setSearch] = useState('')
@@ -189,6 +191,13 @@ export function RankingsTable({
           of future results. We are a registered Mutual Fund Distributor. This is not investment
           advice.
         </div>
+
+        {/* As-of date */}
+        {fmtAsOf(loadedAt) && (
+          <p className="mt-2 text-right text-xs text-muted-foreground">
+            Data as of {fmtAsOf(loadedAt)}
+          </p>
+        )}
 
         {/* Table */}
         <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card shadow-sm">

@@ -17,6 +17,17 @@ export function fmtRupees(v: number): string {
   return `₹${Math.round(v).toLocaleString('en-IN')}`
 }
 
+// Format an ISO datetime into "4 Jun 2026"
+export function fmtAsOf(iso: string | null | undefined): string | null {
+  if (!iso) return null
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return null
+  const day = d.getDate()
+  const month = d.toLocaleString('en-GB', { month: 'short' })
+  const year = d.getFullYear()
+  return `${day} ${month} ${year}`
+}
+
 export function fmtNum(v: number | null, digits = 1): string {
   if (v === null || v === undefined || Number.isNaN(v)) return '—'
   return v.toFixed(digits)

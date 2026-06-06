@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import type { Fund } from '@/lib/types'
 import { ScoreBadge } from '@/components/score-badge'
-import { fmtPct, fmtRate, fmtTer, fmtNum } from '@/lib/format'
+import { fmtPct, fmtPickAnn, fmtRate, fmtTer, fmtNum } from '@/lib/format'
 
 function MetricRow({ label, value }: { label: string; value: string }) {
   return (
@@ -175,7 +175,7 @@ export function FundDrawer({
                 />
                 <MetricRow label="Vs benchmark / yr" value={fmtPct(fund.aret)} />
                 <MetricRow label="Consistency (hit rate)" value={fmtRate(fund.hrate)} />
-                <MetricRow label="Stock pick / yr" value={fmtPct(fund.pickAnn)} />
+                <MetricRow label="Stock pick / yr" value={fmtPickAnn(fund.pickAnn)} />
                 <MetricRow label="Expense ratio (TER)" value={fmtTer(fund.ter)} />
                 {fund.catRank && fund.catSize ? (
                   <MetricRow

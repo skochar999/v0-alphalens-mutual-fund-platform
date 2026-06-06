@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import type { Amc, Category, Fund } from '@/lib/types'
 import { ScoreBadge } from '@/components/score-badge'
 import { Spinner } from '@/components/spinner'
-import { fmtAsOf, fmtPct, fmtRate, fmtTer } from '@/lib/format'
+import { fmtAsOf, fmtPct, fmtPickAnn, fmtRate, fmtTer } from '@/lib/format'
 
 type SortKey = 'score' | 'aret' | 'hrate' | 'pickAnn' | 'ter' | 'ret' | 'name' | 'amc'
 
@@ -282,7 +282,7 @@ export function RankingsTable({
                             : 'text-negative'
                         }`}
                       >
-                        {fmtPct(f.pickAnn)}
+                        {fmtPickAnn(f.pickAnn)}
                       </td>
                       <td className="hidden px-3 py-3 text-right tabular-nums text-muted-foreground md:table-cell">
                         {fmtTer(f.ter)}

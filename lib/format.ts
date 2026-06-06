@@ -33,15 +33,24 @@ export function fmtNum(v: number | null, digits = 1): string {
   return v.toFixed(digits)
 }
 
+// hrate is already percent-scaled (e.g. 47 => 47%)
 export function fmtRate(v: number | null): string {
   if (v === null || v === undefined || Number.isNaN(v)) return '—'
-  return `${Math.round(v * 100)}%`
+  return `${Math.round(v)}%`
 }
 
-// TER stored as fraction (0.014 => 1.40%)
+// TER is already percent-scaled (e.g. 1.4 => 1.40%)
 export function fmtTer(v: number | null): string {
   if (v === null || v === undefined || Number.isNaN(v)) return '—'
-  return `${(v * 100).toFixed(2)}%`
+  return `${v.toFixed(2)}%`
+}
+
+// pickAnn is basis-point-like (e.g. 2463.4 => +24.6%)
+export function fmtPickAnn(v: number | null): string {
+  if (v === null || v === undefined || Number.isNaN(v)) return '—'
+  const pct = v / 100
+  const sign = pct > 0 ? '+' : ''
+  return `${sign}${pct.toFixed(1)}%`
 }
 
 export function scoreColor(score: number): {

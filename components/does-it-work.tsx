@@ -8,7 +8,7 @@ export function DoesItWork() {
           7 out of 10 funds we pick beat their benchmark.
         </h2>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          A high AlphaLens Score isn&apos;t a guess — it&apos;s a strong, measurable edge. Here&apos;s
+          A high AlphaPicker Score isn&apos;t a guess — it&apos;s a strong, measurable edge. Here&apos;s
           how our top-scored funds have actually performed.
         </p>
 

@@ -6,7 +6,7 @@ import { ChevronDown } from 'lucide-react'
 const faqs = [
   {
     q: 'How is the score calculated?',
-    a: 'We decompose each fund\u2019s NAV history into market beta, style/sector tilts, stock selection and timing. The AlphaLens Score rewards genuine, repeatable stock-selection skill and consistency (how often the fund beats its benchmark), while discounting returns that simply came from the market rising or from one-off lucky bets.',
+    a: 'We decompose each fund\u2019s NAV history into market beta, style/sector tilts, stock selection and timing. The AlphaPicker Score rewards genuine, repeatable stock-selection skill and consistency (how often the fund beats its benchmark), while discounting returns that simply came from the market rising or from one-off lucky bets.',
   },
   {
     q: 'What is alpha?',
@@ -14,7 +14,7 @@ const faqs = [
   },
   {
     q: 'Why exclude index funds?',
-    a: 'Index funds and ETFs are designed to track a benchmark, not beat it, so measuring their stock-selection skill is meaningless — by construction they have none. AlphaLens focuses on actively managed funds where the question \u201cis the manager actually adding value?\u201d is worth answering.',
+    a: 'Index funds and ETFs are designed to track a benchmark, not beat it, so measuring their stock-selection skill is meaningless — by construction they have none. AlphaPicker focuses on actively managed funds where the question \u201cis the manager actually adding value?\u201d is worth answering.',
   },
   {
     q: 'Where does the data come from?',
@@ -36,7 +36,7 @@ export function Methodology() {
           For the curious
         </div>
         <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          How does AlphaLens actually work?
+          How does AlphaPicker actually work?
         </h2>
 
         <div className="mt-6 divide-y divide-border overflow-hidden rounded-xl border border-border bg-background">

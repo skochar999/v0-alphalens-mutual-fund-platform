@@ -10,7 +10,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'AlphaLens — India\'s most data-driven mutual fund rankings',
+  title: 'AlphaPicker — India\'s most data-driven mutual fund rankings',
   description:
     'See what\'s really driving your mutual fund returns. Data-driven rankings of Indian mutual funds by alpha, consistency, and stock selection skill.',
   generator: 'v0.app',

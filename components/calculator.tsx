@@ -132,7 +132,7 @@ export function Calculator() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-positive/30 bg-positive/8 p-5">
                 <div className="text-xs font-semibold uppercase tracking-wide text-positive">
-                  AlphaLens picks
+                  AlphaPicker picks
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground">18% annual return</div>
                 <div className="mt-3 text-2xl font-bold tabular-nums text-foreground sm:text-3xl">

@@ -4,7 +4,7 @@ export function Nav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <a href="#top" className="flex items-baseline gap-2">
           <span className="text-xl font-bold tracking-tight text-primary">
-            AlphaLens
+            AlphaPicker
           </span>
           <span className="hidden text-xs font-medium text-positive sm:inline">
             data over hype

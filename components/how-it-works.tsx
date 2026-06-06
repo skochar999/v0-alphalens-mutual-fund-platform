@@ -17,7 +17,7 @@ const ingredients = [
     icon: Target,
     title: 'Stock Selection',
     tag: 'Genuine alpha',
-    body: 'The real thing. Returns earned by picking the right stocks within a style — this is the genuine manager alpha that AlphaLens hunts for and rewards.',
+    body: 'The real thing. Returns earned by picking the right stocks within a style — this is the genuine manager alpha that AlphaPicker hunts for and rewards.',
     highlight: true,
   },
   {

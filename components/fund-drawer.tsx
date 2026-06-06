@@ -157,7 +157,7 @@ export function FundDrawer({
                 <ScoreBadge score={fund.score} size="lg" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    AlphaLens Score
+                    AlphaPicker Score
                   </div>
                   <div className="text-xs text-muted-foreground">
                     {fund.skill ?? 'Composite skill & consistency rating'}

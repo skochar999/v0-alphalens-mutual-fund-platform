@@ -1,10 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Amc, Category, Fund } from '@/lib/types'
 import { ScoreBadge } from '@/components/score-badge'
 import { Spinner } from '@/components/spinner'
 import { fmtAsOf, fmtPct, fmtPickAnn, fmtRate, fmtTer } from '@/lib/format'
+import { trackEvent } from '@/lib/analytics'
 
 type SortKey = 'score' | 'aret' | 'hrate' | 'pickAnn' | 'ter' | 'ret' | 'name' | 'amc'
 
@@ -54,6 +55,20 @@ export function RankingsTable({
   const [sortKey, setSortKey] = useState<SortKey>('score')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [page, setPage] = useState(1)
+
+  // Debounced search-term tracking (fires ~600ms after typing stops)
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    const q = search.trim()
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    if (!q) return
+    searchTimer.current = setTimeout(() => {
+      trackEvent('fund_search', { search_term: q })
+    }, 600)
+    return () => {
+      if (searchTimer.current) clearTimeout(searchTimer.current)
+    }
+  }, [search])
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -133,6 +148,7 @@ export function RankingsTable({
             onChange={(e) => {
               setCat(e.target.value)
               setPage(1)
+              trackEvent('filter_category', { category: e.target.value })
             }}
             className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
           >
@@ -244,10 +260,24 @@ export function RankingsTable({
                   {pageRows.map((f) => (
                     <tr
                       key={f.code}
-                      onClick={() => onSelect(f)}
+                      onClick={() => {
+                        trackEvent('fund_view', {
+                          fund_name: f.name,
+                          fund_category: f.cat,
+                          fund_score: f.score,
+                        })
+                        onSelect(f)
+                      }}
                       tabIndex={0}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') onSelect(f)
+                        if (e.key === 'Enter') {
+                          trackEvent('fund_view', {
+                            fund_name: f.name,
+                            fund_category: f.cat,
+                            fund_score: f.score,
+                          })
+                          onSelect(f)
+                        }
                       }}
                       className="cursor-pointer border-b border-border last:border-0 transition-colors hover:bg-accent/50 focus:bg-accent/50 focus:outline-none"
                     >

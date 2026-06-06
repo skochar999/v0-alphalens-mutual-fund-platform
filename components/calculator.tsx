@@ -1,7 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { fmtRupees } from '@/lib/format'
+import { trackEvent } from '@/lib/analytics'
 
 type Mode = 'lump' | 'sip'
 
@@ -41,6 +42,27 @@ export function Calculator() {
   const diff = alpha - avg
   const current = mode === 'lump' ? amount : sipAmount
   const setCurrent = mode === 'lump' ? setAmount : setSipAmount
+
+  // Debounced calculator-usage tracking (avoids spamming on slider drag)
+  const calcTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const calcStarted = useRef(false)
+  useEffect(() => {
+    // Skip the initial mount so we only track real interactions
+    if (!calcStarted.current) {
+      calcStarted.current = true
+      return
+    }
+    if (calcTimer.current) clearTimeout(calcTimer.current)
+    calcTimer.current = setTimeout(() => {
+      trackEvent('calculator_use', {
+        mode: mode === 'lump' ? 'lumpsum' : 'sip',
+        years,
+      })
+    }, 600)
+    return () => {
+      if (calcTimer.current) clearTimeout(calcTimer.current)
+    }
+  }, [mode, amount, sipAmount, years])
 
   return (
     <section id="calculator" className="border-b border-border bg-background scroll-mt-16">

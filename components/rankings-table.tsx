@@ -194,8 +194,9 @@ export function RankingsTable({
 
         {/* As-of date */}
         {fmtAsOf(loadedAt) && (
-          <p className="mt-2 text-right text-xs text-muted-foreground">
-            Data as of {fmtAsOf(loadedAt)}
+          <p className="mt-2 flex items-center gap-1.5 text-left text-xs text-muted-foreground">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-positive" />
+            Data as of {fmtAsOf(loadedAt)} · updated daily
           </p>
         )}
 

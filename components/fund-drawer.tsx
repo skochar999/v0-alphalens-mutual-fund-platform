@@ -25,6 +25,9 @@ function MetricRow({ label, value }: { label: string; value: string }) {
   )
 }
 
+const POSITIVE = '#059669'
+const NEGATIVE = '#dc2626'
+
 function DecompChart({ fund }: { fund: Fund }) {
   const data = [
     { name: 'Market', value: fund.dStyle ?? 0 },
@@ -32,26 +35,30 @@ function DecompChart({ fund }: { fund: Fund }) {
     { name: 'Stock Selection', value: fund.dPick ?? 0 },
     { name: 'Timing', value: fund.dTiming ?? 0 },
   ]
-  const colorFor = (v: number) => (v >= 0 ? 'var(--positive)' : 'var(--negative)')
+  const colorFor = (v: number) => (v >= 0 ? POSITIVE : NEGATIVE)
+
+  // Symmetric domain with padding so bars and end labels always fit.
+  const maxAbs = Math.max(1, ...data.map((d) => Math.abs(d.value)))
+  const bound = maxAbs * 1.35
 
   return (
-    <div className="h-56 w-full">
-      <ResponsiveContainer width="100%" height="100%">
+    <div style={{ height: 200 }} className="w-full">
+      <ResponsiveContainer width="100%" height={200}>
         <BarChart
           data={data}
           layout="vertical"
-          margin={{ top: 4, right: 40, bottom: 4, left: 8 }}
+          margin={{ top: 4, right: 44, bottom: 4, left: 8 }}
         >
-          <XAxis type="number" hide />
+          <XAxis type="number" domain={[-bound, bound]} hide />
           <YAxis
             type="category"
             dataKey="name"
             width={104}
             tickLine={false}
             axisLine={false}
-            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+            tick={{ fontSize: 12, fill: '#6b7280' }}
           />
-          <Bar dataKey="value" radius={4} barSize={22}>
+          <Bar dataKey="value" radius={4} barSize={22} isAnimationActive={false}>
             {data.map((d) => (
               <Cell key={d.name} fill={colorFor(d.value)} />
             ))}
@@ -59,7 +66,7 @@ function DecompChart({ fund }: { fund: Fund }) {
               dataKey="value"
               position="right"
               formatter={(v: number) => `${v > 0 ? '+' : ''}${v.toFixed(1)}%`}
-              style={{ fontSize: 11, fontWeight: 600, fill: 'var(--foreground)' }}
+              style={{ fontSize: 11, fontWeight: 600, fill: '#1a1f36' }}
             />
           </Bar>
         </BarChart>

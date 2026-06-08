@@ -73,9 +73,11 @@ export function Hero({
         </div>
 
         <div className="relative">
-          <QuantEngine />
+          <QuantEngine nFunds={stats?.n_funds ?? null} />
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            Our engine re-fits factor models across all 347 funds in real time.
+            {stats?.n_funds
+              ? `Our engine re-fits factor models across all ${stats.n_funds.toLocaleString('en-IN')} funds in real time.`
+              : 'Our engine re-fits factor models across every fund in real time.'}
           </p>
         </div>
       </div>

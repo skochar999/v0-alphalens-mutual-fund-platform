@@ -28,7 +28,8 @@ const ingredients = [
   },
 ]
 
-export function HowItWorks() {
+export function HowItWorks({ nFunds }: { nFunds?: number | null }) {
+  const fundLabel = nFunds ? nFunds.toLocaleString('en-IN') : '—'
   return (
     <section id="how-it-works" className="border-b border-border bg-card scroll-mt-16">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
@@ -79,7 +80,7 @@ export function HowItWorks() {
 
         <div className="mt-6 rounded-xl border border-primary/20 bg-primary/8 px-6 py-5 text-center">
           <p className="text-base font-semibold text-foreground sm:text-lg">
-            We monitor all 347 funds daily so you don&apos;t have to.
+            We monitor all {fundLabel} funds daily so you don&apos;t have to.
           </p>
         </div>
       </div>

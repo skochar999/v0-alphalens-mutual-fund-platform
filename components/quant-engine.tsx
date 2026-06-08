@@ -22,7 +22,7 @@ function fmtCompact(n: number) {
   return `${n}`
 }
 
-export function QuantEngine() {
+export function QuantEngine({ nFunds }: { nFunds?: number | null }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [readout, setReadout] = useState({
     points: 0,
@@ -221,8 +221,9 @@ export function QuantEngine() {
     // HUD updates (decoupled from rAF to limit React renders)
     let funds = 0
     let dataPoints = 4_200_000
+    const fundCap = nFunds ?? 0
     const hud = setInterval(() => {
-      funds = Math.min(347, funds + Math.round(rand(3, 11)))
+      funds = fundCap > 0 ? Math.min(fundCap, funds + Math.round(rand(3, 11))) : 0
       dataPoints += Math.round(rand(28000, 96000))
       const r2 = 0.82 + Math.sin(Date.now() / 2200) * 0.06
       setReadout({
@@ -256,7 +257,7 @@ export function QuantEngine() {
       clearInterval(hud)
       clearInterval(logTimer)
     }
-  }, [])
+  }, [nFunds])
 
   return (
     <div className="animate-hero-in relative overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-950 shadow-xl">
@@ -276,7 +277,7 @@ export function QuantEngine() {
       <div className="grid grid-cols-3 gap-px border-t border-slate-700/50 bg-slate-700/40">
         <Metric label="data points analyzed" value={fmtCompact(readout.points)} tone="text-sky-300" />
         <Metric label="model R²" value={readout.r2.toFixed(3)} tone="text-emerald-300" />
-        <Metric label="funds analyzed" value={`${readout.funds}/347`} tone="text-slate-100" />
+        <Metric label="funds analyzed" value={`${readout.funds}/${nFunds ?? '—'}`} tone="text-slate-100" />
       </div>
 
       {/* log ticker */}

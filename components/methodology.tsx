@@ -21,19 +21,26 @@ const faqs = [
     q: 'Where does the data come from?',
     a: 'We use publicly reported daily NAV history, scheme metadata and expense ratios sourced from AMC disclosures and official industry feeds. Benchmarks are mapped per scheme category so each fund is compared against the right yardstick.',
   },
-  {
-    q: 'How often is data updated?',
-    a: 'NAVs and the resulting scores are refreshed daily after market close, so the rankings you see always reflect the most recent available track record across all 347 funds we monitor.',
-  },
 ]
 
 export function Methodology({
   methodology,
+  nFunds,
 }: {
   methodology?: MethodologyData | null
+  nFunds?: number | null
 }) {
   const [open, setOpen] = useState<number | null>(0)
   const [detailOpen, setDetailOpen] = useState(false)
+
+  const fundLabel = nFunds ? nFunds.toLocaleString('en-IN') : 'the'
+  const faqsWithUpdate = [
+    ...faqs,
+    {
+      q: 'How often is data updated?',
+      a: `NAVs and the resulting scores are refreshed daily after market close, so the rankings you see always reflect the most recent available track record across all ${fundLabel} funds we monitor.`,
+    },
+  ]
 
   return (
     <section id="methodology" className="border-b border-border bg-card scroll-mt-16">
@@ -46,7 +53,7 @@ export function Methodology({
         </h2>
 
         <div className="mt-6 divide-y divide-border overflow-hidden rounded-xl border border-border bg-background">
-          {faqs.map((faq, i) => {
+          {faqsWithUpdate.map((faq, i) => {
             const isOpen = open === i
             return (
               <div key={faq.q}>

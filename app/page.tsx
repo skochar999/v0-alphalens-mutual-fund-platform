@@ -34,7 +34,7 @@ export default function Page() {
       <Nav />
       <Hero stats={stats ?? null} loading={statsLoading} />
       <Calculator />
-      <HowItWorks />
+      <HowItWorks nFunds={stats?.n_funds ?? null} />
       <DoesItWork />
       <RankingsTable
         funds={funds ?? []}
@@ -44,7 +44,7 @@ export default function Page() {
         loadedAt={health?.loaded_at ?? null}
         onSelect={setSelected}
       />
-      <Methodology methodology={stats?.methodology ?? null} />
+      <Methodology methodology={stats?.methodology ?? null} nFunds={stats?.n_funds ?? null} />
       <Footer />
       <FundDrawer fund={selected} onClose={() => setSelected(null)} />
     </main>

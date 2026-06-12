@@ -62,7 +62,10 @@ export interface Health {
   data_dir: string
 }
 
-const BASE = 'https://alphalens-production-21b7.up.railway.app'
+// Same-origin: requests go to alphapicker.in and are proxied to the Railway
+// backend by the rewrites in next.config.mjs (some ISPs DNS-block
+// *.up.railway.app, so the browser must never call it directly).
+const BASE = ''
 
 async function getJson(path: string) {
   const res = await fetch(`${BASE}${path}`)

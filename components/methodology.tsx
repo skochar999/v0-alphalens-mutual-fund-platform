@@ -7,7 +7,11 @@ import type { Methodology as MethodologyData } from '@/lib/types'
 const faqs = [
   {
     q: 'How is the score calculated?',
-    a: 'We decompose each fund\u2019s NAV history into market beta, style/sector tilts, stock selection and timing. The AlphaPicker Score rewards genuine, repeatable stock-selection skill and consistency (how often the fund beats its benchmark), while discounting returns that simply came from the market rising or from one-off lucky bets.',
+    a: 'Three pillars. Skill (45%): the statistical consistency of pure stock-picking, measured by decomposing every disclosed portfolio against a multi-factor risk model \u2014 plus how much of the fund\u2019s behaviour can\u2019t be explained by factors at all. Conviction (45%): patient, concentrated portfolios with real weight behind top ideas, measured from actual month-to-month holdings. Cost (10%): fees come straight off your return. Deliberately absent: past returns, star ratings and brand \u2014 the research is unambiguous that they predict nothing.',
+  },
+  {
+    q: 'Has the score been tested?',
+    a: 'Yes \u2014 walk-forward, the way quant funds test strategies. At each historical month we rank funds using only data available at the time, then measure how those rankings predicted the NEXT 12 months. The current formula was positively predictive in 76% of test windows; ranking funds by past returns alone predicted nothing. Published academic signals that failed this test were rejected from the score.',
   },
   {
     q: 'What is alpha?',
@@ -101,6 +105,36 @@ export function Methodology({
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                   {methodology.universe}
                 </p>
+                {methodology.score_formula && (
+                  <>
+                    <h3 className="mt-4 text-sm font-semibold text-foreground">
+                      The score formula
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      {methodology.score_formula}
+                    </p>
+                  </>
+                )}
+                {methodology.what_we_ignore && (
+                  <>
+                    <h3 className="mt-4 text-sm font-semibold text-foreground">
+                      What we deliberately ignore
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      {methodology.what_we_ignore}
+                    </p>
+                  </>
+                )}
+                {methodology.validation && (
+                  <>
+                    <h3 className="mt-4 text-sm font-semibold text-foreground">
+                      How we validate it
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      {methodology.validation}
+                    </p>
+                  </>
+                )}
                 <h3 className="mt-4 text-sm font-semibold text-foreground">
                   Stock-picking rating
                 </h3>

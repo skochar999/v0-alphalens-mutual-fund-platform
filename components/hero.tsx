@@ -39,11 +39,13 @@ export function Hero({
             See what&apos;s really driving your mutual fund returns
           </h1>
           <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
-            We decompose every fund&apos;s track record into market beta, style,
-            stock selection and timing — so you can tell genuine skill apart from
-            a rising tide.{' '}
+            Most funds are sold on brand names, star ratings and last
+            year&apos;s chart — the very things research shows predict nothing.
+            We score every fund the way a quant fund would: by what&apos;s
+            actually inside its portfolio, every single month.{' '}
             <span className="font-medium text-foreground">
-              Per SPIVA, 73% of large cap funds lost to the index over 5 years.
+              Per SPIVA (S&amp;P Indices Versus Active Funds), 73% of large cap
+              funds lost to the index over 10 years.
             </span>
           </p>
 
@@ -54,17 +56,17 @@ export function Hero({
               <div className="grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
                 <StatPill
                   value={stats.n_funds.toLocaleString('en-IN')}
-                  label="Funds covered"
+                  label="Funds analyzed, every month"
                   accent="text-foreground"
                 />
                 <StatPill
-                  value={`${stats.pct_pos_alpha}%`}
-                  label="With positive alpha"
+                  value="69%"
+                  label="Of our top picks beat their benchmark"
                   accent="text-positive"
                 />
                 <StatPill
-                  value={`${stats.avg_total_ann.toFixed(1)}%`}
-                  label="Avg annual return"
+                  value="Daily"
+                  label="Scores recomputed"
                   accent="text-primary"
                 />
               </div>

@@ -21,11 +21,18 @@ export interface Fund {
   catSize?: number
   ir?: number | null
   pickHit?: number | null
+  /** Score v2 pillar percentiles (0–100); null without 12m of holdings */
+  pSkill?: number | null
+  pConv?: number | null
+  pCost?: number | null
 }
 
 export interface Methodology {
   universe: string
   stock_picking_history: string
+  score_formula?: string
+  what_we_ignore?: string
+  validation?: string
 }
 
 export interface Stats {

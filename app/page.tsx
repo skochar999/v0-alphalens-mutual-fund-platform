@@ -12,8 +12,10 @@ import {
 } from '@/lib/types'
 import { Nav } from '@/components/nav'
 import { Hero } from '@/components/hero'
+import { TheProblem } from '@/components/the-problem'
 import { Calculator } from '@/components/calculator'
 import { HowItWorks } from '@/components/how-it-works'
+import { ScorePillars } from '@/components/score-pillars'
 import { DoesItWork } from '@/components/does-it-work'
 import { RankingsTable } from '@/components/rankings-table'
 import { Methodology } from '@/components/methodology'
@@ -33,8 +35,10 @@ export default function Page() {
     <main id="top" className="min-h-screen bg-background text-foreground">
       <Nav />
       <Hero stats={stats ?? null} loading={statsLoading} />
+      <TheProblem />
       <Calculator />
       <HowItWorks nFunds={stats?.n_funds ?? null} />
+      <ScorePillars />
       <DoesItWork />
       <RankingsTable
         funds={funds ?? []}

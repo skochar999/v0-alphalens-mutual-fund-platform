@@ -12,6 +12,7 @@ import {
 } from '@/lib/types'
 import { Nav } from '@/components/nav'
 import { Hero } from '@/components/hero'
+import { WaitlistBanner } from '@/components/waitlist-banner'
 import { TheProblem } from '@/components/the-problem'
 import { Calculator } from '@/components/calculator'
 import { HowItWorks } from '@/components/how-it-works'
@@ -35,6 +36,7 @@ export default function Page() {
     <main id="top" className="min-h-screen bg-background text-foreground">
       <Nav />
       <Hero stats={stats ?? null} loading={statsLoading} />
+      <WaitlistBanner />
       <TheProblem />
       <Calculator />
       <HowItWorks nFunds={stats?.n_funds ?? null} />

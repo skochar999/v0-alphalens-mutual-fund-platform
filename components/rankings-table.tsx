@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Amc, Category, Fund } from '@/lib/types'
 import { ScoreBadge } from '@/components/score-badge'
+import { RowInvestButton } from '@/components/invest-cta'
 import { Spinner } from '@/components/spinner'
 import { fmtAsOf, fmtPct, fmtPickAnn, fmtRate, fmtTer } from '@/lib/format'
 import { trackEvent } from '@/lib/analytics'
@@ -254,6 +255,9 @@ export function RankingsTable({
                         </button>
                       </th>
                     ))}
+                    <th scope="col" className="px-3 py-3 text-right font-semibold text-muted-foreground">
+                      <span className="sr-only">Invest</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -319,6 +323,9 @@ export function RankingsTable({
                       </td>
                       <td className="px-3 py-3 text-right font-semibold tabular-nums text-foreground">
                         {fmtPct(f.ret)}
+                      </td>
+                      <td className="px-3 py-3 text-right">
+                        <RowInvestButton fund={f} />
                       </td>
                     </tr>
                   ))}

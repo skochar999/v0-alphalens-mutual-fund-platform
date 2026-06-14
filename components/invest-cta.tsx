@@ -11,10 +11,14 @@ import {
   WAITLIST_FALLBACK_EMAIL,
 } from '@/lib/invest-config'
 
+/* ------------------------------------------------------------------ *
+ * Triggers
+ * ------------------------------------------------------------------ */
+
 /**
- * The "Invest" call-to-action on the fund drawer.
+ * Full-width "Invest" CTA on the fund drawer.
  * - LIVE mode (AssetPlus partner URL configured): opens the handoff in a new tab.
- * - WAITLIST mode (no partner URL yet): opens a notify-me modal.
+ * - WAITLIST mode (no partner URL yet): opens the notify-me modal for this fund.
  */
 export function InvestCta({ fund }: { fund: Fund }) {
   const [open, setOpen] = useState(false)
@@ -47,13 +51,72 @@ export function InvestCta({ fund }: { fund: Fund }) {
         </span>
       </button>
       {open ? (
-        <WaitlistModal fund={fund} onClose={() => setOpen(false)} />
+        <WaitlistModal fund={fund} source="fund_drawer" onClose={() => setOpen(false)} />
       ) : null}
     </>
   )
 }
 
-function WaitlistModal({ fund, onClose }: { fund: Fund; onClose: () => void }) {
+/**
+ * Compact per-row "Invest" button for the rankings table. In LIVE mode it opens
+ * the AssetPlus handoff; otherwise it opens the waitlist modal for that fund.
+ * Click is stopped from bubbling so it doesn't also open the row's drawer.
+ */
+export function RowInvestButton({ fund }: { fund: Fund }) {
+  const [open, setOpen] = useState(false)
+
+  const base =
+    'inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors'
+
+  if (INVEST_LIVE) {
+    return (
+      <a
+        href={buildInvestUrl(fund)}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className={`${base} bg-primary text-primary-foreground hover:opacity-90`}
+      >
+        Invest
+      </a>
+    )
+  }
+
+  return (
+    <>
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          setOpen(true)
+        }}
+        className={`${base} border border-primary/40 text-primary hover:bg-primary/10`}
+      >
+        Invest
+      </button>
+      {open ? (
+        <WaitlistModal
+          fund={fund}
+          source="rankings_table"
+          onClose={() => setOpen(false)}
+        />
+      ) : null}
+    </>
+  )
+}
+
+/* ------------------------------------------------------------------ *
+ * Modal (shared by every trigger; fund is optional)
+ * ------------------------------------------------------------------ */
+
+export function WaitlistModal({
+  fund,
+  source,
+  onClose,
+}: {
+  fund: Fund | null
+  source: string
+  onClose: () => void
+}) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
@@ -62,14 +125,22 @@ function WaitlistModal({ fund, onClose }: { fund: Fund; onClose: () => void }) {
     e.preventDefault()
     if (!email.trim()) return
     setStatus('sending')
+
+    // Fold the fund (if any) and the trigger source into the single "Fund"
+    // column so no Google Form change is needed.
+    const fundLabel = fund
+      ? `${fund.name} (${fund.code}) · ${source}`
+      : `General waitlist · ${source}`
+
     const payload = {
       name: name.trim(),
       email: email.trim(),
-      interest_scheme_code: fund.code,
-      interest_scheme_name: fund.name,
-      source: 'fund_drawer',
+      interest_scheme_code: fund?.code ?? '',
+      interest_scheme_name: fund?.name ?? 'General waitlist',
+      source,
       ts: new Date().toISOString(),
     }
+
     try {
       if (WAITLIST_GOOGLE_FORM.action) {
         // Google Forms: url-encoded POST, no-cors (response is opaque, so we
@@ -81,7 +152,7 @@ function WaitlistModal({ fund, onClose }: { fund: Fund; onClose: () => void }) {
           body: buildGoogleFormBody({
             name: payload.name,
             email: payload.email,
-            fund: `${payload.interest_scheme_name} (${payload.interest_scheme_code})`,
+            fund: fundLabel,
           }).toString(),
         })
         setStatus('done')
@@ -94,10 +165,9 @@ function WaitlistModal({ fund, onClose }: { fund: Fund; onClose: () => void }) {
         if (!res.ok) throw new Error('bad status')
         setStatus('done')
       } else {
-        // No endpoint configured — fall back to mailto so nothing is lost.
         const subject = encodeURIComponent('AlphaPicker — notify me when investing goes live')
         const body = encodeURIComponent(
-          `Name: ${payload.name}\nEmail: ${payload.email}\nInterested in: ${payload.interest_scheme_name} (${payload.interest_scheme_code})`,
+          `Name: ${payload.name}\nEmail: ${payload.email}\nInterested in: ${fundLabel}`,
         )
         window.location.href = `mailto:${WAITLIST_FALLBACK_EMAIL}?subject=${subject}&body=${body}`
         setStatus('done')
@@ -118,7 +188,8 @@ function WaitlistModal({ fund, onClose }: { fund: Fund; onClose: () => void }) {
             </div>
             <h3 className="text-base font-bold text-foreground">You&apos;re on the list</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              We&apos;ll email you the moment investing goes live on AlphaPicker.
+              We&apos;ll email you the moment investing goes live — plus our monthly
+              newsletter with the latest top-ranked funds.
             </p>
             <button onClick={onClose} className="mt-4 w-full rounded-xl bg-secondary px-4 py-2.5 text-sm font-semibold text-secondary-foreground hover:opacity-90">
               Done
@@ -129,8 +200,14 @@ function WaitlistModal({ fund, onClose }: { fund: Fund; onClose: () => void }) {
             <h3 className="text-base font-bold text-foreground">Investing is coming soon</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">
               We&apos;re building the ability to invest directly. Leave your email and
-              we&apos;ll notify you when it&apos;s live — starting with{' '}
-              <span className="font-medium text-foreground">{fund.name}</span>.
+              we&apos;ll notify you when it&apos;s live
+              {fund ? (
+                <>
+                  {' '}— starting with{' '}
+                  <span className="font-medium text-foreground">{fund.name}</span>
+                </>
+              ) : null}
+              . You&apos;ll also get our monthly newsletter with new top picks.
             </p>
             <input
               type="text"

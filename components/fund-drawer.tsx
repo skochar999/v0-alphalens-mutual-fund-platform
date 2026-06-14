@@ -12,6 +12,7 @@ import {
 } from 'recharts'
 import type { Fund } from '@/lib/types'
 import { ScoreBadge } from '@/components/score-badge'
+import { InvestCta } from '@/components/invest-cta'
 import { fmtPct, fmtPickAnn, fmtRate, fmtTer, fmtNum } from '@/lib/format'
 
 function MetricRow({ label, value }: { label: string; value: string }) {
@@ -164,6 +165,8 @@ export function FundDrawer({
                   </div>
                 </div>
               </div>
+
+              <InvestCta fund={fund} />
 
               <h3 className="mt-6 text-sm font-semibold text-foreground">
                 Key metrics

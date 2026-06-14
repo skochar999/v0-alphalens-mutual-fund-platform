@@ -311,12 +311,25 @@ export function RankingsTable({
                       </td>
                       <td
                         className={`hidden px-3 py-3 text-right tabular-nums md:table-cell ${
-                          (f.pickAnn ?? 0) >= 0
-                            ? 'text-positive'
-                            : 'text-negative'
+                          f.pickAnn === null || f.pickAnn === undefined
+                            ? 'text-muted-foreground'
+                            : f.pickAnn >= 0
+                              ? 'text-positive'
+                              : 'text-negative'
                         }`}
                       >
-                        {fmtPickAnn(f.pickAnn)}
+                        {f.pickAnn !== null && f.pickAnn !== undefined ? (
+                          fmtPickAnn(f.pickAnn)
+                        ) : f.pickN && f.pickN > 0 ? (
+                          <span
+                            className="cursor-help text-xs italic"
+                            title={`Needs 12+ months of holdings history to be reliable (only ${f.pickN} so far).`}
+                          >
+                            &lt;12mo
+                          </span>
+                        ) : (
+                          '—'
+                        )}
                       </td>
                       <td className="hidden px-3 py-3 text-right tabular-nums text-muted-foreground md:table-cell">
                         {fmtTer(f.ter)}

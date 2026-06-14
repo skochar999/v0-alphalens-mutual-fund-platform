@@ -7,6 +7,8 @@ export interface Fund {
   aret: number | null
   hrate: number | null
   pickAnn: number | null
+  /** Months of holdings history behind pickAnn; <12 ⇒ pickAnn suppressed to null */
+  pickN?: number | null
   ter: number | null
   ret: number | null
   mret: number | null

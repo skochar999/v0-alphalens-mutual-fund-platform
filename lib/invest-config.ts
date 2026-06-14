@@ -39,6 +39,40 @@ export const ASSETPLUS_PARTNER_URL =
 export const WAITLIST_ENDPOINT =
   (process.env.NEXT_PUBLIC_WAITLIST_ENDPOINT || '').trim()
 
+/**
+ * Google Form waitlist target (free, unlimited, responses land in a Google
+ * Sheet you own). Submissions POST to the form's /formResponse endpoint as
+ * url-encoded fields. Because Google doesn't send CORS headers, the POST is
+ * "fire-and-forget" (mode: 'no-cors') — we can't read a success response, so
+ * the modal confirms optimistically.
+ *
+ * If you edit the form's questions, regenerate the pre-filled link and update
+ * the entry IDs below.
+ */
+export const WAITLIST_GOOGLE_FORM = {
+  action:
+    'https://docs.google.com/forms/d/e/1FAIpQLSfMV6j9RRMAxlzIWHGqyVBw-XGQRJOhoFi92a3mzABzl0j2Yg/formResponse',
+  fields: {
+    name: 'entry.1120166494',
+    email: 'entry.504889544',
+    fund: 'entry.1629527792',
+  },
+} as const
+
+/** Build the url-encoded body Google Forms expects from a waitlist signup. */
+export function buildGoogleFormBody(input: {
+  name: string
+  email: string
+  fund: string
+}): URLSearchParams {
+  const f = WAITLIST_GOOGLE_FORM.fields
+  return new URLSearchParams({
+    [f.name]: input.name,
+    [f.email]: input.email,
+    [f.fund]: input.fund,
+  })
+}
+
 /** Fallback contact if no waitlist endpoint is configured. */
 export const WAITLIST_FALLBACK_EMAIL = 'skochar999@gmail.com'
 

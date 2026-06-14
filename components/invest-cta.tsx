@@ -6,6 +6,8 @@ import {
   INVEST_LIVE,
   buildInvestUrl,
   WAITLIST_ENDPOINT,
+  WAITLIST_GOOGLE_FORM,
+  buildGoogleFormBody,
   WAITLIST_FALLBACK_EMAIL,
 } from '@/lib/invest-config'
 
@@ -69,7 +71,21 @@ function WaitlistModal({ fund, onClose }: { fund: Fund; onClose: () => void }) {
       ts: new Date().toISOString(),
     }
     try {
-      if (WAITLIST_ENDPOINT) {
+      if (WAITLIST_GOOGLE_FORM.action) {
+        // Google Forms: url-encoded POST, no-cors (response is opaque, so we
+        // confirm optimistically — a network failure still falls through).
+        await fetch(WAITLIST_GOOGLE_FORM.action, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: buildGoogleFormBody({
+            name: payload.name,
+            email: payload.email,
+            fund: `${payload.interest_scheme_name} (${payload.interest_scheme_code})`,
+          }).toString(),
+        })
+        setStatus('done')
+      } else if (WAITLIST_ENDPOINT) {
         const res = await fetch(WAITLIST_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },

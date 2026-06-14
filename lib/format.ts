@@ -45,12 +45,11 @@ export function fmtTer(v: number | null): string {
   return `${v.toFixed(2)}%`
 }
 
-// pickAnn is basis-point-like (e.g. 2463.4 => +24.6%)
+// pickAnn (pick_ann_pp) is already annualised percentage points, e.g. 2.1 => +2.1%.
 export function fmtPickAnn(v: number | null): string {
   if (v === null || v === undefined || Number.isNaN(v)) return '—'
-  const pct = v / 100
-  const sign = pct > 0 ? '+' : ''
-  return `${sign}${pct.toFixed(1)}%`
+  const sign = v > 0 ? '+' : ''
+  return `${sign}${v.toFixed(1)}%`
 }
 
 export function scoreColor(score: number): {

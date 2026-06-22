@@ -3,7 +3,10 @@ export function Footer() {
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="flex flex-col gap-2">
-          <span className="text-lg font-bold text-primary">AlphaPicker</span>
+          <span className="text-lg font-bold">
+            <span className="text-foreground">Alpha</span>
+            <span className="text-primary">Picker</span>
+          </span>
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
             AlphaPicker is an independent research and analytics tool. It provides
             non-personalised, educational information and does not constitute investment

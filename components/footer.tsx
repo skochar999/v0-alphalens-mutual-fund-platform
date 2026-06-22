@@ -5,9 +5,12 @@ export function Footer() {
         <div className="flex flex-col gap-2">
           <span className="text-lg font-bold text-primary">AlphaPicker</span>
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Mutual Fund investments are subject to market risks. Past
-            performance is not indicative of future results. AlphaPicker is a
-            research tool and does not constitute investment advice.
+            AlphaPicker is an independent research and analytics tool. It provides
+            non-personalised, educational information and does not constitute investment
+            advice or a recommendation to buy, sell, or hold any security. We are not a
+            distributor and earn no commissions. Mutual fund investments are subject to
+            market risks; past performance is not indicative of future results. Please
+            consult a SEBI-registered investment adviser for advice specific to your situation.
           </p>
         </div>
       </div>

@@ -11,7 +11,7 @@ export function WaitlistBanner() {
   const [open, setOpen] = useState(false)
 
   return (
-    <section id="waitlist" className="border-b border-border bg-primary/5 scroll-mt-16">
+    <section id="newsletter" className="border-b border-border bg-primary/5 scroll-mt-16">
       <div className="mx-auto flex max-w-7xl flex-col items-start gap-4 px-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-start gap-3">
           <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
@@ -23,11 +23,11 @@ export function WaitlistBanner() {
           </span>
           <div>
             <h2 className="text-base font-bold text-foreground sm:text-lg">
-              Investing is coming soon — join the waitlist
+              Get the funds worth watching — monthly
             </h2>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              We&apos;ll notify you the moment you can invest directly through AlphaPicker,
-              and send our monthly newsletter with the latest top-ranked funds.
+              One email a month: the biggest score moves, skill standouts, and a
+              data-driven read on what&apos;s hype. No spam, no selling.
             </p>
           </div>
         </div>
@@ -35,7 +35,7 @@ export function WaitlistBanner() {
           onClick={() => setOpen(true)}
           className="shrink-0 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
         >
-          Join the waitlist
+          Subscribe free
         </button>
       </div>
       {open ? (

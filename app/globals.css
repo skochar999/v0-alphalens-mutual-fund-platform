@@ -149,3 +149,96 @@
 .animate-hero-in {
   animation: hero-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* ---- Article / markdown content (guides & reports) ---- */
+.article-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+.md-content {
+  color: var(--foreground);
+  line-height: 1.7;
+  font-size: 1.02rem;
+}
+.md-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 1.1rem;
+}
+.md-content h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 2.4rem 0 0.8rem;
+}
+.md-content h3 {
+  font-size: 1.12rem;
+  font-weight: 600;
+  margin: 1.7rem 0 0.5rem;
+}
+.md-content p {
+  margin: 0 0 1rem;
+}
+.md-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.md-content strong {
+  font-weight: 700;
+}
+.md-content em {
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+.md-content ul,
+.md-content ol {
+  margin: 0 0 1rem 1.3rem;
+}
+.md-content li {
+  margin: 0.35rem 0;
+}
+.md-content blockquote {
+  margin: 1.3rem 0;
+  padding: 0.9rem 1.1rem;
+  border-left: 3px solid var(--primary);
+  background: var(--accent);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.md-content blockquote p {
+  margin: 0.3rem 0;
+}
+.md-content hr {
+  margin: 2.2rem 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+.md-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.3rem 0;
+  font-size: 0.92rem;
+}
+.md-content th,
+.md-content td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+}
+.md-content thead th {
+  background: var(--secondary);
+  font-weight: 600;
+}
+.md-content code {
+  font-family: var(--font-mono);
+  background: var(--secondary);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.3rem;
+  font-size: 0.9em;
+}

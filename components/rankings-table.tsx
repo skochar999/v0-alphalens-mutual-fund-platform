@@ -205,8 +205,8 @@ export function RankingsTable({
         {/* Compliance banner */}
         <div className="mt-6 rounded-lg border border-border bg-secondary/60 px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
           Mutual Fund investments are subject to market risks. Past performance is not indicative
-          of future results. We are a registered Mutual Fund Distributor. This is not investment
-          advice.
+          of future results. AlphaPicker is an independent analytics tool, not a distributor — this
+          is non-personalised information, not investment advice.
         </div>
 
         {/* As-of date */}

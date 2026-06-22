@@ -20,6 +20,7 @@ import { ScorePillars } from '@/components/score-pillars'
 import { DoesItWork } from '@/components/does-it-work'
 import { RankingsTable } from '@/components/rankings-table'
 import { Methodology } from '@/components/methodology'
+import { Pricing } from '@/components/pricing'
 import { FundDrawer } from '@/components/fund-drawer'
 import { Footer } from '@/components/footer'
 
@@ -51,6 +52,7 @@ export default function Page() {
         onSelect={setSelected}
       />
       <Methodology methodology={stats?.methodology ?? null} nFunds={stats?.n_funds ?? null} />
+      <Pricing />
       <Footer />
       <FundDrawer fund={selected} onClose={() => setSelected(null)} />
     </main>

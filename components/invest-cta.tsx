@@ -45,9 +45,9 @@ export function InvestCta({ fund }: { fund: Fund }) {
         onClick={() => setOpen(true)}
         className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
       >
-        Invest in this fund
+        Track this fund
         <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide">
-          Coming soon
+          Premium soon
         </span>
       </button>
       {open ? (
@@ -91,7 +91,7 @@ export function RowInvestButton({ fund }: { fund: Fund }) {
         }}
         className={`${base} border border-primary/40 text-primary hover:bg-primary/10`}
       >
-        Invest
+        Track
       </button>
       {open ? (
         <WaitlistModal
@@ -165,7 +165,7 @@ export function WaitlistModal({
         if (!res.ok) throw new Error('bad status')
         setStatus('done')
       } else {
-        const subject = encodeURIComponent('AlphaPicker — notify me when investing goes live')
+        const subject = encodeURIComponent('AlphaPicker — early access + monthly brief')
         const body = encodeURIComponent(
           `Name: ${payload.name}\nEmail: ${payload.email}\nInterested in: ${fundLabel}`,
         )
@@ -178,7 +178,7 @@ export function WaitlistModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Join the investing waitlist">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Get early access to AlphaPicker Premium">
       <div className="absolute inset-0 bg-foreground/40" onClick={onClose} />
       <div className="relative w-full max-w-sm rounded-2xl bg-card p-6 shadow-xl">
         {status === 'done' ? (
@@ -186,10 +186,10 @@ export function WaitlistModal({
             <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-positive/15 text-positive">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
             </div>
-            <h3 className="text-base font-bold text-foreground">You&apos;re on the list</h3>
+            <h3 className="text-base font-bold text-foreground">You&apos;re in</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              We&apos;ll email you the moment investing goes live — plus our monthly
-              newsletter with the latest top-ranked funds.
+              We&apos;ll send early access to Premium and our monthly brief on the
+              funds worth watching. No spam.
             </p>
             <button onClick={onClose} className="mt-4 w-full rounded-xl bg-secondary px-4 py-2.5 text-sm font-semibold text-secondary-foreground hover:opacity-90">
               Done
@@ -197,17 +197,17 @@ export function WaitlistModal({
           </div>
         ) : (
           <form onSubmit={submit}>
-            <h3 className="text-base font-bold text-foreground">Investing is coming soon</h3>
+            <h3 className="text-base font-bold text-foreground">Get early access + the monthly brief</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              We&apos;re building the ability to invest directly. Leave your email and
-              we&apos;ll notify you when it&apos;s live
+              AlphaPicker Premium — portfolio X-ray, score alerts and more — is coming.
+              Leave your email for early access and our monthly brief
               {fund ? (
                 <>
-                  {' '}— starting with{' '}
+                  {' '}— including{' '}
                   <span className="font-medium text-foreground">{fund.name}</span>
                 </>
               ) : null}
-              . You&apos;ll also get our monthly newsletter with new top picks.
+              . No spam, no selling.
             </p>
             <input
               type="text"

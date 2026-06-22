@@ -80,7 +80,7 @@ export function HowItWorks({ nFunds }: { nFunds?: number | null }) {
 
         <div className="mt-6 rounded-xl border border-primary/20 bg-primary/8 px-6 py-5 text-center">
           <p className="text-base font-semibold text-foreground sm:text-lg">
-            We monitor all {fundLabel} funds daily so you don&apos;t have to.
+            We monitor all {fundLabel}{' '}funds daily so you don&apos;t have to.
           </p>
         </div>
       </div>

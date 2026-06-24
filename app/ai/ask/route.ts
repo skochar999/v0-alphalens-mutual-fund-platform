@@ -31,6 +31,101 @@ function compactFund(f: Record<string, unknown>): string {
   return parts.join(' · ')
 }
 
+const STOP = new Set([
+  'the', 'and', 'for', 'with', 'fund', 'funds', 'mutual', 'what', 'which', 'how',
+  'are', 'is', 'of', 'in', 'to', 'best', 'top', 'show', 'me', 'that', 'this',
+  'does', 'do', 'about', 'vs', 'versus', 'compare', 'between', 'good', 'bad',
+  'should', 'can', 'you', 'tell', 'give', 'list', 'score', 'scores',
+])
+
+function tokenize(s: string): string[] {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .split(/\s+/)
+    .filter((t) => t.length > 2 && !STOP.has(t))
+}
+
+const CAT_SYNONYMS: Record<string, string[]> = {
+  'Flexi Cap': ['flexi'],
+  'Small Cap': ['small cap', 'smallcap', 'small-cap'],
+  'Mid Cap': ['mid cap', 'midcap', 'mid-cap'],
+  'Large Cap': ['large cap', 'largecap', 'large-cap'],
+  'Tax Saver (ELSS)': ['elss', 'tax saver', 'tax-saver'],
+  'Multi Cap': ['multi cap', 'multicap', 'multi-cap'],
+  'Value / Contrarian': ['value', 'contrarian'],
+  Focused: ['focused'],
+  'Thematic / Sectoral': ['thematic', 'sectoral', 'sector'],
+  Hybrid: ['hybrid', 'balanced'],
+}
+
+function topBy(
+  pool: Record<string, unknown>[],
+  key: 'pickAnn' | 'score' | 'ter',
+  n: number,
+): Record<string, unknown>[] {
+  const arr = pool.filter((f) => typeof f[key] === 'number')
+  arr.sort((a, b) => {
+    const av = a[key] as number
+    const bv = b[key] as number
+    return key === 'ter' ? av - bv : bv - av
+  })
+  return arr.slice(0, n)
+}
+
+// Lightweight retrieval: pick only the funds relevant to the question instead of
+// shipping the entire universe as context.
+function selectRelevantFunds(
+  question: string,
+  funds: Record<string, unknown>[],
+  categories: string[],
+): Record<string, unknown>[] {
+  const ql = question.toLowerCase()
+  const qTokens = tokenize(question)
+
+  const scored = funds.map((f) => {
+    const name = String(f.name ?? '').toLowerCase()
+    const amc = String(f.amc ?? '').toLowerCase()
+    let s = 0
+    for (const t of qTokens) {
+      if (name.includes(t)) s += 3
+      else if (amc.includes(t)) s += 2
+    }
+    return { f, s }
+  })
+  const nameMatches = scored
+    .filter((x) => x.s > 0)
+    .sort((a, b) => b.s - a.s)
+    .slice(0, 25)
+    .map((x) => x.f)
+
+  const catSet = new Set<string>()
+  for (const c of categories) {
+    if (ql.includes(c.toLowerCase())) catSet.add(c)
+    const syns = CAT_SYNONYMS[c]
+    if (syns && syns.some((syn) => ql.includes(syn))) catSet.add(c)
+  }
+
+  const wantsSkill = /skill|stock.?pick|alpha|\bpick/.test(ql)
+  const wantsCheap = /cheap|low.?cost|low.?fee|expense|\bter\b/.test(ql)
+  const sortKey: 'pickAnn' | 'score' | 'ter' = wantsSkill ? 'pickAnn' : wantsCheap ? 'ter' : 'score'
+
+  const catTop = catSet.size
+    ? topBy(funds.filter((f) => catSet.has(String(f.cat))), sortKey, 20)
+    : []
+  const baseline = topBy(funds, 'score', 12)
+
+  const seen = new Set<unknown>()
+  const out: Record<string, unknown>[] = []
+  for (const f of [...nameMatches, ...catTop, ...baseline]) {
+    if (seen.has(f.code)) continue
+    seen.add(f.code)
+    out.push(f)
+    if (out.length >= 60) break
+  }
+  return out
+}
+
 export async function POST(req: Request) {
   if (!aiConfigured()) {
     return textResponse("AlphaPicker's AI assistant isn't switched on yet — check back soon.")
@@ -65,15 +160,19 @@ export async function POST(req: Request) {
     // proceed with whatever we have
   }
 
+  const lastUser = [...messages].reverse().find((m) => m.role === 'user')?.content ?? ''
+  const categoryNames = Array.from(new Set(funds.map((f) => String(f.cat ?? '')))).filter(Boolean)
+  const relevant = selectRelevantFunds(lastUser, funds, categoryNames)
+
   const method = (stats?.methodology ?? {}) as Record<string, string>
-  const fundLines = funds.slice(0, 700).map(compactFund).join('\n')
+  const fundLines = relevant.map(compactFund).join('\n')
   const context = `METHODOLOGY:
 ${method.score_formula ?? ''}
 ${method.universe ?? ''}
 What we ignore: ${method.what_we_ignore ?? ''}
 Validation: ${method.validation ?? ''}
 
-FUND DATA (${funds.length} funds. "pick" = stock-selection alpha %/yr; "score" = AlphaPicker 0-100; "ter" = annual fee %; "vsBmk" = return vs benchmark %/yr):
+FUND DATA (${relevant.length} of ${funds.length} funds, selected as most relevant to the question. "pick" = stock-selection alpha %/yr; "score" = AlphaPicker 0-100; "ter" = annual fee %; "vsBmk" = return vs benchmark %/yr). If a fund the user asks about is not listed here, say you don't have it to hand rather than guessing:
 ${fundLines}`
 
   const system = `You are AlphaPicker's assistant. AlphaPicker is an independent Indian mutual-fund analytics tool that scores funds on genuine stock-picking skill — separating skill from market, style and sector.

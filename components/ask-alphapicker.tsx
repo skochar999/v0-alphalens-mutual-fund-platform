@@ -10,6 +10,17 @@ const SUGGESTIONS = [
   'What does the AlphaPicker score mean?',
 ]
 
+function replaceLastAssistant(msgs: Msg[], content: string): Msg[] {
+  const copy = msgs.slice()
+  for (let i = copy.length - 1; i >= 0; i--) {
+    if (copy[i].role === 'assistant') {
+      copy[i] = { ...copy[i], content }
+      break
+    }
+  }
+  return copy
+}
+
 export function AskAlphaPicker() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Msg[]>([])
@@ -34,11 +45,32 @@ export function AskAlphaPicker() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ messages: next }),
       })
-      const data = await res.json()
-      setMessages((m) => [
-        ...m,
-        { role: 'assistant', content: data?.reply ?? data?.error ?? 'Sorry, something went wrong.' },
-      ])
+      if (!res.body) {
+        const fallback = await res.text().catch(() => '')
+        setMessages((m) => [
+          ...m,
+          { role: 'assistant', content: fallback || 'Sorry, something went wrong.' },
+        ])
+        return
+      }
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let acc = ''
+      let started = false
+      for (;;) {
+        const { done, value } = await reader.read()
+        if (done) break
+        acc += decoder.decode(value, { stream: true })
+        if (!started) {
+          started = true
+          setMessages((m) => [...m, { role: 'assistant', content: acc }])
+        } else {
+          setMessages((m) => replaceLastAssistant(m, acc))
+        }
+      }
+      if (!started) {
+        setMessages((m) => [...m, { role: 'assistant', content: 'Sorry, something went wrong.' }])
+      }
     } catch {
       setMessages((m) => [
         ...m,
@@ -110,7 +142,7 @@ export function AskAlphaPicker() {
               </div>
             ))}
 
-            {loading ? (
+            {loading && messages[messages.length - 1]?.role === 'user' ? (
               <div className="flex justify-start">
                 <div className="rounded-2xl bg-secondary px-3 py-2 text-sm text-muted-foreground">
                   Thinking…

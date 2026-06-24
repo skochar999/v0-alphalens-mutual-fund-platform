@@ -1,7 +1,6 @@
-import { NextResponse } from 'next/server'
 import {
   aiConfigured,
-  callAnthropic,
+  streamAnthropic,
   fetchFundsServer,
   fetchStatsServer,
   MODEL_CHAT,
@@ -10,6 +9,13 @@ import {
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
+
+function textResponse(body: string, status = 200) {
+  return new Response(body, {
+    status,
+    headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },
+  })
+}
 
 function compactFund(f: Record<string, unknown>): string {
   const num = (k: string) => (typeof f[k] === 'number' ? (f[k] as number) : null)
@@ -27,16 +33,14 @@ function compactFund(f: Record<string, unknown>): string {
 
 export async function POST(req: Request) {
   if (!aiConfigured()) {
-    return NextResponse.json({
-      reply: "AlphaPicker's AI assistant isn't switched on yet — check back soon.",
-    })
+    return textResponse("AlphaPicker's AI assistant isn't switched on yet — check back soon.")
   }
 
   let body: { messages?: ChatMessage[] }
   try {
     body = await req.json()
   } catch {
-    return NextResponse.json({ error: 'Bad request' }, { status: 400 })
+    return textResponse('Bad request', 400)
   }
 
   const raw = Array.isArray(body?.messages) ? body.messages : []
@@ -50,7 +54,7 @@ export async function POST(req: Request) {
     .slice(-10)
     .map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }))
   if (!messages.length) {
-    return NextResponse.json({ error: 'No message' }, { status: 400 })
+    return textResponse('No message', 400)
   }
 
   let funds: Record<string, unknown>[] = []
@@ -90,20 +94,22 @@ STYLE (important — this is a chat, not an article):
 DATA:
 ${context}`
 
-  let reply = ''
   try {
-    reply = await callAnthropic({
+    const stream = await streamAnthropic({
       model: MODEL_CHAT,
       system,
       messages,
       maxTokens: 350,
       temperature: 0.3,
     })
-  } catch {
-    return NextResponse.json({
-      reply: 'Sorry — I had trouble answering just now. Please try again.',
+    return new Response(stream, {
+      headers: {
+        'content-type': 'text/plain; charset=utf-8',
+        'cache-control': 'no-store',
+        'x-content-type-options': 'nosniff',
+      },
     })
+  } catch {
+    return textResponse('Sorry — I had trouble answering just now. Please try again.')
   }
-
-  return NextResponse.json({ reply })
 }

@@ -54,6 +54,79 @@ export async function callAnthropic(opts: {
     .trim()
 }
 
+// Streams an Anthropic completion as a plain-text ReadableStream of token deltas.
+export async function streamAnthropic(opts: {
+  model: string
+  system: string
+  messages: ChatMessage[]
+  maxTokens?: number
+  temperature?: number
+}): Promise<ReadableStream<Uint8Array>> {
+  const key = process.env.ANTHROPIC_API_KEY
+  if (!key) throw new Error('AI_NOT_CONFIGURED')
+
+  const upstream = await fetch(ANTHROPIC_URL, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: opts.model,
+      max_tokens: opts.maxTokens ?? 1024,
+      temperature: opts.temperature ?? 0.2,
+      system: opts.system,
+      messages: opts.messages.map((m) => ({ role: m.role, content: m.content })),
+      stream: true,
+    }),
+  })
+
+  if (!upstream.ok || !upstream.body) {
+    const text = await upstream.text().catch(() => '')
+    throw new Error(`Anthropic ${upstream.status}: ${text.slice(0, 300)}`)
+  }
+
+  const encoder = new TextEncoder()
+  const decoder = new TextDecoder()
+  const reader = upstream.body.getReader()
+  let buffer = ''
+
+  return new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      const { done, value } = await reader.read()
+      if (done) {
+        controller.close()
+        return
+      }
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+      for (const line of lines) {
+        const trimmed = line.trim()
+        if (!trimmed.startsWith('data:')) continue
+        const payload = trimmed.slice(5).trim()
+        if (!payload || payload === '[DONE]') continue
+        try {
+          const evt = JSON.parse(payload)
+          if (
+            evt?.type === 'content_block_delta' &&
+            evt?.delta?.type === 'text_delta' &&
+            typeof evt.delta.text === 'string'
+          ) {
+            controller.enqueue(encoder.encode(evt.delta.text))
+          }
+        } catch {
+          // ignore keep-alive / non-JSON lines
+        }
+      }
+    },
+    cancel() {
+      reader.cancel().catch(() => {})
+    },
+  })
+}
+
 export async function fetchFundsServer(): Promise<Record<string, unknown>[]> {
   const res = await fetch(`${DATA_BASE}/api/funds`, { next: { revalidate: 3600 } })
   if (!res.ok) throw new Error('funds fetch failed')

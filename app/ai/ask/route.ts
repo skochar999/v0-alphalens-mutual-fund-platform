@@ -81,7 +81,11 @@ HARD RULES (compliance — do not break):
 - NEVER tell the user what to buy, sell, hold, or how to allocate. Describe and explain; do not recommend or prescribe.
 - If asked "what should I invest in / buy", politely decline, explain that you provide analytics not advice, offer to show or explain the relevant scores/data, and suggest they consult a SEBI-registered investment adviser for personal advice.
 - No performance promises or predictions of future returns.
-- Keep answers concise and plain-English. Use the skill-vs-luck framing where relevant.
+
+STYLE (important — this is a chat, not an article):
+- Answer in 2-4 short sentences. Be brief and direct; lead with the answer. If the user wants more, they will ask.
+- Plain conversational text ONLY. Do NOT use markdown: no headings, no tables, no bullet or numbered lists, no bold, no asterisks. Just sentences.
+- Use the skill-vs-luck framing in plain words where it helps.
 
 DATA:
 ${context}`
@@ -92,7 +96,7 @@ ${context}`
       model: MODEL_CHAT,
       system,
       messages,
-      maxTokens: 900,
+      maxTokens: 350,
       temperature: 0.3,
     })
   } catch {

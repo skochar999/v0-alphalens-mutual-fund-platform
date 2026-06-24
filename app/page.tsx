@@ -23,6 +23,7 @@ import { Methodology } from '@/components/methodology'
 import { Pricing } from '@/components/pricing'
 import { FundDrawer } from '@/components/fund-drawer'
 import { Footer } from '@/components/footer'
+import { AskAlphaPicker } from '@/components/ask-alphapicker'
 
 export default function Page() {
   const { data: funds, isLoading: fundsLoading } = useSWR('funds', fetchFunds)
@@ -55,6 +56,7 @@ export default function Page() {
       <Pricing />
       <Footer />
       <FundDrawer fund={selected} onClose={() => setSelected(null)} />
+      <AskAlphaPicker />
     </main>
   )
 }

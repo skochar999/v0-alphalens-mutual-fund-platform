@@ -7,6 +7,7 @@ import { RowInvestButton } from '@/components/invest-cta'
 import { Spinner } from '@/components/spinner'
 import { fmtAsOf, fmtPct, fmtPickAnn, fmtRate, fmtTer } from '@/lib/format'
 import { trackEvent } from '@/lib/analytics'
+import { NlScreener, type AiFilters } from '@/components/nl-screener'
 
 type SortKey = 'score' | 'aret' | 'hrate' | 'pickAnn' | 'ter' | 'ret' | 'name' | 'amc'
 
@@ -56,6 +57,9 @@ export function RankingsTable({
   const [sortKey, setSortKey] = useState<SortKey>('score')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [page, setPage] = useState(1)
+  const [maxTer, setMaxTer] = useState<number | null>(null)
+  const [minPickAnn, setMinPickAnn] = useState<number | null>(null)
+  const [aiSummary, setAiSummary] = useState('')
 
   // Debounced search-term tracking (fires ~600ms after typing stops)
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -81,12 +85,40 @@ export function RankingsTable({
     setPage(1)
   }
 
+  function applyAiFilters(f: AiFilters, explanation: string) {
+    setSearch('')
+    setCat(f.cat && categories.some((c) => c.cat === f.cat) ? f.cat : 'all')
+    setMinScore(typeof f.minScore === 'number' ? f.minScore : 0)
+    setMaxTer(typeof f.maxTer === 'number' ? f.maxTer : null)
+    setMinPickAnn(typeof f.minPickAnn === 'number' ? f.minPickAnn : null)
+    if (f.sortKey) setSortKey(f.sortKey as SortKey)
+    if (f.sortDir) setSortDir(f.sortDir)
+    setAiSummary(explanation)
+    setPage(1)
+  }
+
+  function clearAi() {
+    setMaxTer(null)
+    setMinPickAnn(null)
+    setAiSummary('')
+    setCat('all')
+    setMinScore(0)
+    setSearch('')
+    setPage(1)
+  }
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
     const rows = funds.filter((f) => {
       if (cat !== 'all' && f.cat !== cat) return false
       if (amc !== 'all' && f.amc !== amc) return false
       if (f.score < minScore) return false
+      if (maxTer !== null && (f.ter === null || f.ter > maxTer)) return false
+      if (
+        minPickAnn !== null &&
+        (f.pickAnn === null || f.pickAnn === undefined || f.pickAnn < minPickAnn)
+      )
+        return false
       if (q && !`${f.name} ${f.amc}`.toLowerCase().includes(q)) return false
       return true
     })
@@ -102,7 +134,7 @@ export function RankingsTable({
       return sortDir === 'asc' ? cmp : -cmp
     })
     return rows
-  }, [funds, search, cat, amc, minScore, sortKey, sortDir])
+  }, [funds, search, cat, amc, minScore, maxTer, minPickAnn, sortKey, sortDir])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -124,6 +156,18 @@ export function RankingsTable({
               : `${filtered.length} of ${funds.length} funds — click any row for the full breakdown.`}
           </p>
         </div>
+
+        <NlScreener categories={categories.map((c) => c.cat)} onApply={applyAiFilters} />
+        {aiSummary ? (
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-foreground">
+            <span>
+              <span className="font-semibold text-primary">AI screen:</span> {aiSummary}
+            </span>
+            <button onClick={clearAi} className="shrink-0 font-medium text-primary hover:underline">
+              Clear
+            </button>
+          </div>
+        ) : null}
 
         {/* Filters */}
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

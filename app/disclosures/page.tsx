@@ -10,6 +10,7 @@ import {
   arnTagline,
 } from '@/lib/compliance-config'
 import rateCard from '@/content/disclosures/commission-rates.json'
+import { COMMISSION, COVERAGE } from '@/lib/commission'
 
 export const metadata: Metadata = {
   title: 'Disclosures — AlphaPicker',
@@ -183,8 +184,35 @@ export default function DisclosuresPage() {
               </div>
               <p className="text-xs">
                 Rates are per annum, as receivable by the distributor, and are subject to change
-                by the AMC. {asOf ? `Last updated ${asOf}.` : null}
+                by the AMC. Figures are {COMMISSION.basis} — GST is added by the AMC and remitted
+                onward, so it is not income to us.
+                {COMMISSION.provider
+                  ? ` Sourced from ${COMMISSION.provider}'s published rate card${
+                      COMMISSION.slab ? ` (band ${COMMISSION.slab})` : ''
+                    }.`
+                  : null}{' '}
+                {asOf ? `Last updated ${asOf}.` : null}
               </p>
+
+              {COVERAGE && COVERAGE.pct < 100 ? (
+                <div className="rounded-lg border border-border bg-secondary/40 px-4 py-3 text-xs leading-relaxed">
+                  <p className="font-semibold text-foreground">
+                    What this table does not cover
+                  </p>
+                  <p className="mt-1">
+                    Our distribution partner carries {COVERAGE.matched} of the{' '}
+                    {COVERAGE.ranked} schemes AlphaPicker ranks ({COVERAGE.pct}%). The ranges above
+                    describe only those. Schemes we rank but cannot distribute earn us nothing, and
+                    you cannot invest in them here — they are still ranked on their merits.
+                  </p>
+                  {COVERAGE.uncoveredAmcs.length ? (
+                    <p className="mt-1.5">
+                      No scheme from these fund houses is currently available through our partner:{' '}
+                      <span className="text-foreground">{COVERAGE.uncoveredAmcs.join(', ')}</span>.
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
             </>
           )}
         </Section>

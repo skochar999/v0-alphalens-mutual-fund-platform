@@ -14,6 +14,8 @@ import type { Fund } from '@/lib/types'
 import { ScoreBadge } from '@/components/score-badge'
 import { InvestCta } from '@/components/invest-cta'
 import { fmtPct, fmtPickAnn, fmtRate, fmtTer, fmtNum } from '@/lib/format'
+import { IS_DISTRIBUTOR } from '@/lib/compliance-config'
+import { commissionLine, COMMISSION } from '@/lib/commission'
 
 function MetricRow({ label, value }: { label: string; value: string }) {
   return (
@@ -22,6 +24,46 @@ function MetricRow({ label, value }: { label: string; value: string }) {
       <span className="text-sm font-semibold tabular-nums text-foreground">
         {value}
       </span>
+    </div>
+  )
+}
+
+/**
+ * What AlphaPicker earns on this specific fund (08 §7).
+ *
+ * Renders only once the site is actually a distributor — pre-live there is no
+ * commission to disclose and the block would be a claim about a future state.
+ *
+ * Two states, no third: a published rate, or an honest "not carried". We never
+ * estimate from a category range — an invented number on a disclosure surface is
+ * worse than an absent one.
+ */
+function CommissionNote({ fund }: { fund: Fund }) {
+  if (!IS_DISTRIBUTOR) return null
+
+  const line = commissionLine(fund.code)
+
+  if (!line) {
+    return (
+      <div className="mt-4 rounded-xl border border-dashed border-border bg-secondary/30 p-4">
+        <div className="text-sm font-semibold text-foreground">What we earn on this fund</div>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          This scheme is not currently available through our distribution partner
+          {COMMISSION.provider ? ` (${COMMISSION.provider})` : ''}, so there is no commission
+          to disclose — and you cannot invest in it here. It is ranked on its merits either way.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-4 rounded-xl border border-border bg-secondary/30 p-4">
+      <div className="text-sm font-semibold text-foreground">What we earn on this fund</div>
+      <p className="mt-1 text-sm leading-relaxed text-foreground">{line.headline}</p>
+      <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{line.detail}</p>
+      <a href="/disclosures#rates" className="mt-2 inline-block text-xs font-medium underline underline-offset-2">
+        All commission rates, across competing schemes
+      </a>
     </div>
   )
 }
@@ -167,6 +209,8 @@ export function FundDrawer({
               </div>
 
               <InvestCta fund={fund} />
+
+              <CommissionNote fund={fund} />
 
               <h3 className="mt-6 text-sm font-semibold text-foreground">
                 Key metrics

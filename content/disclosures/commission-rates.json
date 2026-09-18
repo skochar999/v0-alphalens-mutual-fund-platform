@@ -1,27 +1,159 @@
 {
   "_README": [
-    "AMFI Code of Conduct, item 1: a distributor must disclose all commissions received,",
-    "and on digital platforms must prominently link to the rates receivable ACROSS COMPETING",
-    "SCHEMES — not just the ones it happens to sell. This file is that disclosure.",
+    "GENERATED FILE \u2014 do not hand-edit. Regenerate with build_commission_rates.py",
+    "in the AlphaLens repo (it carries the full rationale and usage).",
     "",
-    "⚠️ THIS FILE MUST BE POPULATED BEFORE GO-LIVE. AssetPlus supplies the rate card once",
-    "registration completes (00_GO_LIVE_TRACKER.md §1 item A). Until `rates` is non-empty the",
-    "/disclosures page renders a visible 'not yet published' state rather than an empty table,",
-    "so an unpopulated file can never masquerade as a complete disclosure.",
+    "AMFI Code of Conduct item 1: a distributor must disclose all commissions",
+    "received, and on digital platforms must prominently link to the rates",
+    "receivable ACROSS COMPETING SCHEMES. This file is that disclosure.",
     "",
-    "⚠️ KEEP IT CURRENT. Trail rates change. Update `asOf` whenever rates change and note the",
-    "change below. A stale commission disclosure is a conduct problem, not a content problem.",
+    "Rates are BASE brokerage % per annum \u2014 what the distributor actually keeps.",
+    "GST is added by the AMC and remitted onward, so it is excluded here.",
     "",
-    "Coverage rule: list EVERY category AlphaPicker ranks, and within each category the full",
-    "range across all AMCs whose schemes appear in the rankings — not only those with clients.",
+    "Ranges span every ranked scheme in each category, not only schemes with",
+    "clients. `provider` and `slab` are part of the disclosure: they change if",
+    "the distribution platform or the AUM band changes, and the page reads them",
+    "from this file rather than assuming.",
     "",
-    "Schema per row:",
-    "  category   — as it appears in the rankings (must match stats.json category labels)",
-    "  trailMin   — lowest first-year trail % p.a. receivable across competing schemes",
-    "  trailMax   — highest first-year trail % p.a. receivable across competing schemes",
-    "  note       — anything material: B-30 incentives, clawback terms, differing 2nd-year trail"
+    "`coverage` is part of the disclosure, not metadata. A rate card covers the",
+    "schemes the platform distributes, which is not the same as the schemes",
+    "AlphaPicker ranks. Naming the AMCs with no rate is what keeps the ranges",
+    "honest \u2014 the alternative is a table that silently implies full coverage."
   ],
-  "asOf": null,
-  "source": null,
-  "rates": []
+  "asOf": "2026-09-18",
+  "provider": "AssetPlus",
+  "slab": "S1",
+  "source": "0b5b4d2d-S1_Brokerage_Rates.pdf",
+  "basis": "base brokerage, excluding GST",
+  "coverage": {
+    "matched": 272,
+    "ranked": 611,
+    "pct": 44.5,
+    "uncoveredAmcs": [
+      "NJ",
+      "Navi",
+      "Nippon",
+      "Old Bridge",
+      "PGIM",
+      "PPFAS",
+      "Quant",
+      "Trust",
+      "Union"
+    ],
+    "partiallyCoveredAmcs": [
+      "360 ONE",
+      "Aditya Birla",
+      "Axis",
+      "Bajaj",
+      "Bandhan",
+      "Bank of",
+      "Baroda BNP",
+      "Canara Robeco",
+      "DSP",
+      "Edelweiss",
+      "Franklin",
+      "Groww",
+      "HDFC",
+      "HSBC",
+      "ICICI Pru",
+      "ITI",
+      "Invesco Mutual",
+      "Kotak",
+      "LIC",
+      "Mahindra",
+      "Mirae",
+      "Motilal",
+      "SBI",
+      "Sundaram",
+      "Tata",
+      "UTI",
+      "WhiteOak"
+    ]
+  },
+  "rates": [
+    {
+      "category": "Balanced Advantage",
+      "trailMin": 0.4,
+      "trailMax": 1.305,
+      "note": "17 ranked schemes"
+    },
+    {
+      "category": "Flexi Cap",
+      "trailMin": 0.543,
+      "trailMax": 1.305,
+      "note": "20 ranked schemes"
+    },
+    {
+      "category": "Focused",
+      "trailMin": 0.572,
+      "trailMax": 1.211,
+      "note": "8 ranked schemes"
+    },
+    {
+      "category": "Hybrid",
+      "trailMin": 0.231,
+      "trailMax": 1.305,
+      "note": "38 ranked schemes"
+    },
+    {
+      "category": "Large & Mid Cap",
+      "trailMin": 0.585,
+      "trailMax": 1.029,
+      "note": "8 ranked schemes"
+    },
+    {
+      "category": "Large Cap",
+      "trailMin": 0.615,
+      "trailMax": 1.263,
+      "note": "9 ranked schemes"
+    },
+    {
+      "category": "Mid Cap",
+      "trailMin": 0.45,
+      "trailMax": 1.263,
+      "note": "13 ranked schemes"
+    },
+    {
+      "category": "Multi Cap",
+      "trailMin": 0.576,
+      "trailMax": 1.076,
+      "note": "16 ranked schemes"
+    },
+    {
+      "category": "Other",
+      "trailMin": 0.115,
+      "trailMax": 1.189,
+      "note": "7 ranked schemes"
+    },
+    {
+      "category": "Retirement",
+      "trailMin": 0.516,
+      "trailMax": 1.005,
+      "note": "17 ranked schemes"
+    },
+    {
+      "category": "Small Cap",
+      "trailMin": 0.528,
+      "trailMax": 1.002,
+      "note": "14 ranked schemes"
+    },
+    {
+      "category": "Tax Saver (ELSS)",
+      "trailMin": 0.543,
+      "trailMax": 1.312,
+      "note": "16 ranked schemes"
+    },
+    {
+      "category": "Thematic / Sectoral",
+      "trailMin": 0.224,
+      "trailMax": 1.348,
+      "note": "82 ranked schemes"
+    },
+    {
+      "category": "Value / Contrarian",
+      "trailMin": 0.4,
+      "trailMax": 1.219,
+      "note": "7 ranked schemes"
+    }
+  ]
 }

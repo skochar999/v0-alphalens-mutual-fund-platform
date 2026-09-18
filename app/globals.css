@@ -24,6 +24,8 @@
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-card-elevated: var(--card-elevated);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
@@ -45,82 +47,111 @@
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-xl: calc(var(--radius) * 1.5);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ============================================================================
+   AlphaPicker design system — "research terminal"
+   ============================================================================
+   Dark is the DEFAULT (<html class="dark">); light is an opt-in override that
+   the user toggles. Both themes are the same system, not two designs: near-
+   monochrome canvas, hairline rules instead of shadows, one cold accent used
+   sparingly, and signed values (positive/negative) as the only other colour.
+
+   Rules for anyone editing this file:
+   - Numbers are ALWAYS mono + tabular. Use `.num`. Columns of figures that
+     do not align are the single fastest way to look unserious.
+   - Borders are hairlines. Do not add box-shadows to reintroduce depth;
+     elevation is expressed with --card / --card-elevated, not shadow.
+   - The accent (--primary) marks interaction, not decoration. If more than
+     ~5% of a screen is accent-coloured, something is wrong.
+   - Never colour a number by anything other than its sign or its scale.
+   ========================================================================= */
+
+/* ---- LIGHT: research-house paper --------------------------------------- */
 :root {
-  --background: #f5f7fc;
-  --foreground: #1a1f36;
+  --background: #f6f6f4;
+  --foreground: #15181d;
   --card: #ffffff;
-  --card-foreground: #1a1f36;
+  --card-elevated: #ffffff;
+  --card-foreground: #15181d;
   --popover: #ffffff;
-  --popover-foreground: #1a1f36;
-  --primary: #3b6ee8;
+  --popover-foreground: #15181d;
+  --primary: #1a63d8;
   --primary-foreground: #ffffff;
-  --secondary: #eef1f8;
-  --secondary-foreground: #1a1f36;
-  --muted: #eef1f8;
-  --muted-foreground: #6b7280;
-  --accent: #e7edfb;
-  --accent-foreground: #1a1f36;
-  --destructive: #dc2626;
-  --border: #e2e6f0;
-  --input: #e2e6f0;
-  --ring: #3b6ee8;
-  --positive: #059669;
-  --negative: #dc2626;
-  --warning: #d97706;
-  --chart-1: #3b6ee8;
-  --chart-2: #059669;
-  --chart-3: #d97706;
-  --chart-4: #dc2626;
-  --chart-5: #6b7280;
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --secondary: #ebebe7;
+  --secondary-foreground: #15181d;
+  --muted: #ebebe7;
+  --muted-foreground: #5b6472;
+  --accent: #e4ecfb;
+  --accent-foreground: #15181d;
+  --destructive: #c62828;
+  --border: #deded8;
+  --border-strong: #c4c4bc;
+  --input: #dedede;
+  --ring: #1a63d8;
+  --positive: #04795f;
+  --negative: #c62828;
+  --warning: #9a6700;
+  --grid-line: rgba(21, 24, 29, 0.055);
+  --chart-1: #1a63d8;
+  --chart-2: #04795f;
+  --chart-3: #9a6700;
+  --chart-4: #c62828;
+  --chart-5: #5b6472;
+  --radius: 0.25rem;
+  --sidebar: #f0f0ec;
+  --sidebar-foreground: #15181d;
+  --sidebar-primary: #1a63d8;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e4ecfb;
+  --sidebar-accent-foreground: #15181d;
+  --sidebar-border: #deded8;
+  --sidebar-ring: #1a63d8;
 }
 
+/* ---- DARK (default): the terminal --------------------------------------- */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0a0d12;
+  --foreground: #e7ebf1;
+  --card: #10141b;
+  --card-elevated: #161b24;
+  --card-foreground: #e7ebf1;
+  --popover: #12171f;
+  --popover-foreground: #e7ebf1;
+  --primary: #4d9fff;
+  --primary-foreground: #05070a;
+  --secondary: #171d27;
+  --secondary-foreground: #e7ebf1;
+  --muted: #171d27;
+  --muted-foreground: #8b95a6;
+  --accent: #16273d;
+  --accent-foreground: #e7ebf1;
+  --destructive: #ff5f5f;
+  --border: #1f2631;
+  --border-strong: #2c3440;
+  --input: #222a36;
+  --ring: #4d9fff;
+  --positive: #2fd39f;
+  --negative: #ff5f5f;
+  --warning: #f2b23e;
+  --grid-line: rgba(231, 235, 241, 0.045);
+  --chart-1: #4d9fff;
+  --chart-2: #2fd39f;
+  --chart-3: #f2b23e;
+  --chart-4: #ff5f5f;
+  --chart-5: #8b95a6;
+  --sidebar: #0d1118;
+  --sidebar-foreground: #e7ebf1;
+  --sidebar-primary: #4d9fff;
+  --sidebar-primary-foreground: #05070a;
+  --sidebar-accent: #16273d;
+  --sidebar-accent-foreground: #e7ebf1;
+  --sidebar-border: #1f2631;
+  --sidebar-ring: #4d9fff;
 }
 
 @layer base {
@@ -152,7 +183,8 @@
 
 /* ---- Article / markdown content (guides & reports) ---- */
 .article-eyebrow {
-  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -221,6 +253,7 @@
 }
 .md-content table {
   width: 100%;
+  font-variant-numeric: tabular-nums;
   border-collapse: collapse;
   margin: 1.3rem 0;
   font-size: 0.92rem;
@@ -233,7 +266,12 @@
 }
 .md-content thead th {
   background: var(--secondary);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-foreground);
 }
 .md-content code {
   font-family: var(--font-mono);
@@ -241,4 +279,91 @@
   padding: 0.1rem 0.3rem;
   border-radius: 0.3rem;
   font-size: 0.9em;
+}
+
+
+/* ============================================================================
+   Terminal utilities
+   ========================================================================= */
+
+/* Every number on the site. Mono + tabular so columns align and digits do not
+   jitter as values update. Applied to figures, scores, percentages, currency. */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+  letter-spacing: -0.01em;
+}
+
+/* Uppercase micro-label: column headers, eyebrows, section kickers, stat
+   captions. The workhorse of the research-terminal look. */
+.label-micro {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-foreground);
+}
+
+/* Faint graph-paper backdrop for hero / section bands. */
+.grid-backdrop {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Hairline rule that fades at both ends — section separators. */
+.rule-fade {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border-strong) 15%,
+    var(--border-strong) 85%,
+    transparent
+  );
+}
+
+/* Signed values. Never colour a number by anything but its sign. */
+.val-pos { color: var(--positive); }
+.val-neg { color: var(--negative); }
+
+/* Data panel: the standard container. Hairline, no shadow. */
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* Scrollbars, so dark mode does not get a bright gutter. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* Theme toggle must never animate the whole page on switch. */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-transition,
+  .theme-transition * {
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease;
+  }
 }

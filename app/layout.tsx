@@ -42,8 +42,23 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} bg-background`}>
+    <html
+      lang="en"
+      className={`dark ${geistSans.variable} ${geistMono.variable} bg-background`}
+      suppressHydrationWarning
+    >
       <head>
+        {/* Runs before first paint. Dark is already on <html> from the server
+            render, so this only needs to REMOVE it when the visitor has
+            previously chosen light. Inline + blocking on purpose: a deferred
+            script would let a dark frame paint before switching to light. */}
+        <script
+          id="ap-theme-init"
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(localStorage.getItem('ap-theme')==='light'){document.documentElement.classList.remove('dark')}}catch(e){}",
+          }}
+        />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"

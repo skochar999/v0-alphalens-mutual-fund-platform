@@ -148,8 +148,9 @@ export function RankingsTable({
     <section id="rankings" className="scroll-mt-16">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
-            Fund Rankings
+          <span className="label-micro">01 — The universe</span>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
+            Fund rankings
           </h2>
           <p className="text-muted-foreground">
             {loading
@@ -160,7 +161,7 @@ export function RankingsTable({
 
         <NlScreener categories={categories.map((c) => c.cat)} onApply={applyAiFilters} />
         {aiSummary ? (
-          <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-foreground">
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-sm border border-primary/25 bg-primary/5 px-3 py-2 text-xs text-foreground">
             <span>
               <span className="font-semibold text-primary">AI screen:</span> {aiSummary}
             </span>
@@ -185,7 +186,7 @@ export function RankingsTable({
                 setPage(1)
               }}
               placeholder="Search by fund or AMC…"
-              className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none ring-primary/30 placeholder:text-muted-foreground focus:ring-2"
+              className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
             />
           </div>
           <select
@@ -196,7 +197,7 @@ export function RankingsTable({
               setPage(1)
               trackEvent('filter_category', { category: e.target.value })
             }}
-            className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+            className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
           >
             <option value="all">All categories</option>
             {categories.map((c) => (
@@ -212,7 +213,7 @@ export function RankingsTable({
               setAmc(e.target.value)
               setPage(1)
             }}
-            className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+            className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
           >
             <option value="all">All AMCs</option>
             {amcs.map((a) => (
@@ -221,7 +222,7 @@ export function RankingsTable({
               </option>
             ))}
           </select>
-          <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2">
+          <div className="flex items-center gap-3 rounded-sm border border-border bg-card px-3 py-2">
             <label
               htmlFor="minScore"
               className="whitespace-nowrap text-xs font-medium text-muted-foreground"
@@ -241,14 +242,14 @@ export function RankingsTable({
               }}
               className="h-1.5 flex-1 cursor-pointer accent-primary"
             />
-            <span className="w-7 text-right text-sm font-semibold tabular-nums text-foreground">
+            <span className="num w-7 text-right text-sm font-semibold text-foreground">
               {minScore}
             </span>
           </div>
         </div>
 
         {/* Compliance banner */}
-        <div className="mt-6 rounded-lg border border-border bg-secondary/60 px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
+        <div className="mt-6 rounded-sm border-l-2 border-border border-l-border-strong bg-secondary/40 px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
           {shortDisclaimer()}
         </div>
 
@@ -261,7 +262,7 @@ export function RankingsTable({
         )}
 
         {/* Table */}
-        <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <div className="mt-4 overflow-hidden rounded-sm border border-border bg-card">
           {loading ? (
             <Spinner label="Fetching fund rankings…" />
           ) : filtered.length === 0 ? (
@@ -272,12 +273,12 @@ export function RankingsTable({
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-border bg-secondary/50 text-left">
+                  <tr className="border-b border-border bg-secondary/40 text-left">
                     {columns.map((col) => (
                       <th
                         key={col.key}
                         scope="col"
-                        className={`px-3 py-3 font-semibold text-muted-foreground ${
+                        className={`label-micro px-3 py-2.5 ${
                           col.numeric ? 'text-right' : 'text-left'
                         } ${col.hideMobile ? 'hidden md:table-cell' : ''}`}
                       >
@@ -298,7 +299,7 @@ export function RankingsTable({
                         </button>
                       </th>
                     ))}
-                    <th scope="col" className="px-3 py-3 text-right font-semibold text-muted-foreground">
+                    <th scope="col" className="px-3 py-2.5 text-right">
                       <span className="sr-only">Invest</span>
                     </th>
                   </tr>
@@ -343,17 +344,17 @@ export function RankingsTable({
                         <ScoreBadge score={f.score} />
                       </td>
                       <td
-                        className={`hidden px-3 py-3 text-right tabular-nums md:table-cell ${
+                        className={`hidden px-3 py-3 num text-right md:table-cell ${
                           (f.aret ?? 0) >= 0 ? 'text-positive' : 'text-negative'
                         }`}
                       >
                         {fmtPct(f.aret)}
                       </td>
-                      <td className="hidden px-3 py-3 text-right tabular-nums text-foreground md:table-cell">
+                      <td className="hidden px-3 py-3 num text-right text-foreground md:table-cell">
                         {fmtRate(f.hrate)}
                       </td>
                       <td
-                        className={`hidden px-3 py-3 text-right tabular-nums md:table-cell ${
+                        className={`hidden px-3 py-3 num text-right md:table-cell ${
                           f.pickAnn === null || f.pickAnn === undefined
                             ? 'text-muted-foreground'
                             : f.pickAnn >= 0
@@ -374,7 +375,7 @@ export function RankingsTable({
                           '—'
                         )}
                       </td>
-                      <td className="hidden px-3 py-3 text-right tabular-nums text-muted-foreground md:table-cell">
+                      <td className="hidden px-3 py-3 num text-right text-muted-foreground md:table-cell">
                         {fmtTer(f.ter)}
                       </td>
                       <td className="px-3 py-3 text-right font-semibold tabular-nums text-foreground">
@@ -406,17 +407,17 @@ export function RankingsTable({
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage <= 1}
-                className="rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-sm border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-border-strong hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Previous
               </button>
-              <span className="text-sm tabular-nums text-muted-foreground">
+              <span className="num text-sm text-muted-foreground">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage >= totalPages}
-                className="rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-sm border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-border-strong hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
               </button>

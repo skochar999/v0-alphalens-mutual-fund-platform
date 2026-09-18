@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { IS_DISTRIBUTOR } from '@/lib/compliance-config'
 
 export function Nav() {
   return (
@@ -26,17 +27,19 @@ export function Nav() {
           >
             Reports
           </Link>
+          {IS_DISTRIBUTOR && (
+            <Link
+              href="/disclosures"
+              className="hidden rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:inline-block"
+            >
+              Disclosures
+            </Link>
+          )}
           <Link
             href="/#rankings"
-            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            Rankings
-          </Link>
-          <Link
-            href="/#premium"
             className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
-            Premium
+            {IS_DISTRIBUTOR ? 'Invest' : 'See scores'}
           </Link>
         </nav>
       </div>

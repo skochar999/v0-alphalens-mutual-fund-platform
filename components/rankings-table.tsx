@@ -8,6 +8,7 @@ import { Spinner } from '@/components/spinner'
 import { fmtAsOf, fmtPct, fmtPickAnn, fmtRate, fmtTer } from '@/lib/format'
 import { trackEvent } from '@/lib/analytics'
 import { NlScreener, type AiFilters } from '@/components/nl-screener'
+import { shortDisclaimer } from '@/lib/compliance-config'
 
 type SortKey = 'score' | 'aret' | 'hrate' | 'pickAnn' | 'ter' | 'ret' | 'name' | 'amc'
 
@@ -248,9 +249,7 @@ export function RankingsTable({
 
         {/* Compliance banner */}
         <div className="mt-6 rounded-lg border border-border bg-secondary/60 px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
-          Mutual Fund investments are subject to market risks. Past performance is not indicative
-          of future results. AlphaPicker is an independent analytics tool, not a distributor — this
-          is non-personalised information, not investment advice.
+          {shortDisclaimer()}
         </div>
 
         {/* As-of date */}

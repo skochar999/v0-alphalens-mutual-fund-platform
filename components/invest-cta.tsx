@@ -207,7 +207,7 @@ export function WaitlistModal({
                   <span className="font-medium text-foreground">{fund.name}</span>
                 </>
               ) : null}
-              . No spam, no selling.
+              . No spam — unsubscribe any time.
             </p>
             <input
               type="text"

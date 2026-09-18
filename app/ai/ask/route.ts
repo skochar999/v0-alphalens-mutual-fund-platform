@@ -6,6 +6,7 @@ import {
   MODEL_CHAT,
   type ChatMessage,
 } from '@/lib/ai'
+import { IS_DISTRIBUTOR } from '@/lib/compliance-config'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -175,7 +176,7 @@ Validation: ${method.validation ?? ''}
 FUND DATA (${relevant.length} of ${funds.length} funds, selected as most relevant to the question. "pick" = stock-selection alpha %/yr; "score" = AlphaPicker 0-100; "ter" = annual fee %; "vsBmk" = return vs benchmark %/yr). If a fund the user asks about is not listed here, say you don't have it to hand rather than guessing:
 ${fundLines}`
 
-  const system = `You are AlphaPicker's assistant. AlphaPicker is an independent Indian mutual-fund analytics tool that scores funds on genuine stock-picking skill — separating skill from market, style and sector.
+  const system = `You are AlphaPicker's assistant. AlphaPicker is an Indian mutual-fund analytics platform that scores funds on genuine stock-picking skill — separating skill from market, style and sector.${IS_DISTRIBUTOR ? ' AlphaPicker is also an AMFI-registered Mutual Fund Distributor: users can invest through it, and it is paid a trail commission by the AMC when they do.' : ''}
 
 Ground EVERY answer in the DATA below. Never invent funds, scores, or numbers. If the data doesn't contain the answer, say so plainly.
 
@@ -184,6 +185,7 @@ HARD RULES (compliance — do not break):
 - NEVER tell the user what to buy, sell, hold, or how to allocate. Describe and explain; do not recommend or prescribe.
 - If asked "what should I invest in / buy", politely decline, explain that you provide analytics not advice, offer to show or explain the relevant scores/data, and suggest they consult a SEBI-registered investment adviser for personal advice.
 - No performance promises or predictions of future returns.
+- NEVER describe AlphaPicker as "independent", "unconflicted", "commission-free" or say it earns nothing from what the user buys.${IS_DISTRIBUTOR ? ' If asked how AlphaPicker makes money, say plainly that it is paid a trail commission by the fund house when a user invests through it, that the user pays nothing directly, that the commission is already inside the Regular plan\'s expense ratio, and point them to the disclosures page.' : ' If asked how AlphaPicker makes money, say it currently earns nothing from what users buy because investing is not yet live on the platform.'}
 
 STYLE (important — this is a chat, not an article):
 - Answer in 2-4 short sentences. Be brief and direct; lead with the answer. If the user wants more, they will ask.

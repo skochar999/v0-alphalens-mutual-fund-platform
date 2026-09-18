@@ -1,0 +1,27 @@
+{
+  "_README": [
+    "AMFI Code of Conduct, item 1: a distributor must disclose all commissions received,",
+    "and on digital platforms must prominently link to the rates receivable ACROSS COMPETING",
+    "SCHEMES — not just the ones it happens to sell. This file is that disclosure.",
+    "",
+    "⚠️ THIS FILE MUST BE POPULATED BEFORE GO-LIVE. AssetPlus supplies the rate card once",
+    "registration completes (00_GO_LIVE_TRACKER.md §1 item A). Until `rates` is non-empty the",
+    "/disclosures page renders a visible 'not yet published' state rather than an empty table,",
+    "so an unpopulated file can never masquerade as a complete disclosure.",
+    "",
+    "⚠️ KEEP IT CURRENT. Trail rates change. Update `asOf` whenever rates change and note the",
+    "change below. A stale commission disclosure is a conduct problem, not a content problem.",
+    "",
+    "Coverage rule: list EVERY category AlphaPicker ranks, and within each category the full",
+    "range across all AMCs whose schemes appear in the rankings — not only those with clients.",
+    "",
+    "Schema per row:",
+    "  category   — as it appears in the rankings (must match stats.json category labels)",
+    "  trailMin   — lowest first-year trail % p.a. receivable across competing schemes",
+    "  trailMax   — highest first-year trail % p.a. receivable across competing schemes",
+    "  note       — anything material: B-30 incentives, clawback terms, differing 2nd-year trail"
+  ],
+  "asOf": null,
+  "source": null,
+  "rates": []
+}

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'AlphaPicker — Is your mutual fund skill or luck?',
   description:
-    'AlphaPicker is the independent analytics tool that scores Indian mutual funds on real stock-picking skill — separating manager talent from market luck, style, and sector. No commissions. Free to start.',
+    'AlphaPicker scores Indian mutual funds on real stock-picking skill — separating manager talent from market luck, style, and sector. Free to use.',
   generator: 'v0.app',
   icons: {
     icon: [

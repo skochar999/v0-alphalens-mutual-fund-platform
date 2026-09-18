@@ -27,7 +27,7 @@ export function WaitlistBanner() {
             </h2>
             <p className="mt-0.5 text-sm text-muted-foreground">
               One email a month: the biggest score moves, skill standouts, and a
-              data-driven read on what&apos;s hype. No spam, no selling.
+              data-driven read on what&apos;s hype. No spam — unsubscribe any time.
             </p>
           </div>
         </div>

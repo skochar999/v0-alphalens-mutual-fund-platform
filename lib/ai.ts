@@ -94,31 +94,56 @@ export async function streamAnthropic(opts: {
 
   return new ReadableStream<Uint8Array>({
     async pull(controller) {
-      const { done, value } = await reader.read()
-      if (done) {
-        controller.close()
-        return
-      }
-      buffer += decoder.decode(value, { stream: true })
-      const lines = buffer.split('\n')
-      buffer = lines.pop() ?? ''
-      for (const line of lines) {
-        const trimmed = line.trim()
-        if (!trimmed.startsWith('data:')) continue
-        const payload = trimmed.slice(5).trim()
-        if (!payload || payload === '[DONE]') continue
-        try {
-          const evt = JSON.parse(payload)
-          if (
-            evt?.type === 'content_block_delta' &&
-            evt?.delta?.type === 'text_delta' &&
-            typeof evt.delta.text === 'string'
-          ) {
-            controller.enqueue(encoder.encode(evt.delta.text))
-          }
-        } catch {
-          // ignore keep-alive / non-JSON lines
+      // A `pull` that enqueues nothing is never called again, so the stream
+      // stalls until the platform kills the function. Anthropic's final events
+      // (content_block_stop / message_delta / message_stop) carry no text, so
+      // the naive one-read-per-pull version deadlocked there and held the
+      // response open for the full maxDuration after the answer was complete.
+      // Fix: never return from `pull` without enqueuing something or closing.
+      for (;;) {
+        const { done, value } = await reader.read()
+        if (done) {
+          controller.close()
+          return
         }
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() ?? ''
+        let enqueued = 0
+        let finished = false
+        for (const line of lines) {
+          const trimmed = line.trim()
+          if (!trimmed.startsWith('data:')) continue
+          const payload = trimmed.slice(5).trim()
+          if (!payload) continue
+          if (payload === '[DONE]') {
+            finished = true
+            continue
+          }
+          try {
+            const evt = JSON.parse(payload)
+            if (
+              evt?.type === 'content_block_delta' &&
+              evt?.delta?.type === 'text_delta' &&
+              typeof evt.delta.text === 'string'
+            ) {
+              controller.enqueue(encoder.encode(evt.delta.text))
+              enqueued++
+            } else if (evt?.type === 'message_stop' || evt?.type === 'error') {
+              // Close on Anthropic's own terminal event rather than waiting for
+              // a socket EOF that may never come on a kept-alive connection.
+              finished = true
+            }
+          } catch {
+            // ignore keep-alive / non-JSON lines
+          }
+        }
+        if (finished) {
+          controller.close()
+          reader.cancel().catch(() => {})
+          return
+        }
+        if (enqueued > 0) return
       }
     },
     cancel() {

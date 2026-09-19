@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { aiConfigured, callAnthropic, MODEL_FAST } from '@/lib/ai'
+import { AI_FEATURES_ENABLED, aiConfigured, callAnthropic, MODEL_FAST } from '@/lib/ai'
 
 export const runtime = 'nodejs'
 export const maxDuration = 30
@@ -7,6 +7,10 @@ export const maxDuration = 30
 const SORT_KEYS = ['score', 'aret', 'hrate', 'pickAnn', 'ter', 'ret', 'name', 'amc']
 
 export async function POST(req: Request) {
+  // Shelved 2026-09-18 — see AI_FEATURES_ENABLED in lib/ai.ts.
+  if (!AI_FEATURES_ENABLED) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
   if (!aiConfigured()) {
     return NextResponse.json({ error: 'AI is not enabled yet.' })
   }

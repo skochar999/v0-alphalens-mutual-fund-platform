@@ -5,8 +5,24 @@ const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages'
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string }
 
+/**
+ * Master switch for both AI features — Ask AlphaPicker (the chat bubble) and
+ * the natural-language screener above the rankings table.
+ *
+ * Turned OFF 2026-09-18. The features are shelved until the MFAPI fund data
+ * lands and the first public version of the site is live; the UI is unmounted
+ * and both /ai/* routes short-circuit before reaching Anthropic, so there is no
+ * unauthenticated public path to the API key while nothing is using it.
+ *
+ * To restore: set this to true, then re-mount <AskAlphaPicker /> in
+ * app/page.tsx and <NlScreener /> in components/rankings-table.tsx.
+ * ⚠️ Before re-enabling, read 09_VERCEL_AUDIT.md §5 — the streaming deadlock
+ * fix in streamAnthropic() below must stay in place.
+ */
+export const AI_FEATURES_ENABLED = false
+
 export function aiConfigured(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY)
+  return AI_FEATURES_ENABLED && Boolean(process.env.ANTHROPIC_API_KEY)
 }
 
 export const MODEL_CHAT = process.env.ANTHROPIC_MODEL_CHAT || 'claude-sonnet-4-6'

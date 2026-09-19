@@ -7,7 +7,6 @@ import { RowInvestButton } from '@/components/invest-cta'
 import { Spinner } from '@/components/spinner'
 import { fmtAsOf, fmtPct, fmtPickAnn, fmtRate, fmtTer } from '@/lib/format'
 import { trackEvent } from '@/lib/analytics'
-import { NlScreener, type AiFilters } from '@/components/nl-screener'
 import { shortDisclaimer } from '@/lib/compliance-config'
 
 type SortKey = 'score' | 'aret' | 'hrate' | 'pickAnn' | 'ter' | 'ret' | 'name' | 'amc'
@@ -60,7 +59,6 @@ export function RankingsTable({
   const [page, setPage] = useState(1)
   const [maxTer, setMaxTer] = useState<number | null>(null)
   const [minPickAnn, setMinPickAnn] = useState<number | null>(null)
-  const [aiSummary, setAiSummary] = useState('')
 
   // Debounced search-term tracking (fires ~600ms after typing stops)
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -83,28 +81,6 @@ export function RankingsTable({
       setSortKey(key)
       setSortDir(key === 'name' || key === 'amc' || key === 'ter' ? 'asc' : 'desc')
     }
-    setPage(1)
-  }
-
-  function applyAiFilters(f: AiFilters, explanation: string) {
-    setSearch('')
-    setCat(f.cat && categories.some((c) => c.cat === f.cat) ? f.cat : 'all')
-    setMinScore(typeof f.minScore === 'number' ? f.minScore : 0)
-    setMaxTer(typeof f.maxTer === 'number' ? f.maxTer : null)
-    setMinPickAnn(typeof f.minPickAnn === 'number' ? f.minPickAnn : null)
-    if (f.sortKey) setSortKey(f.sortKey as SortKey)
-    if (f.sortDir) setSortDir(f.sortDir)
-    setAiSummary(explanation)
-    setPage(1)
-  }
-
-  function clearAi() {
-    setMaxTer(null)
-    setMinPickAnn(null)
-    setAiSummary('')
-    setCat('all')
-    setMinScore(0)
-    setSearch('')
     setPage(1)
   }
 
@@ -158,18 +134,6 @@ export function RankingsTable({
               : `${filtered.length} of ${funds.length} funds — click any row for the full breakdown.`}
           </p>
         </div>
-
-        <NlScreener categories={categories.map((c) => c.cat)} onApply={applyAiFilters} />
-        {aiSummary ? (
-          <div className="mt-3 flex items-center justify-between gap-3 rounded-sm border border-primary/25 bg-primary/5 px-3 py-2 text-xs text-foreground">
-            <span>
-              <span className="font-semibold text-primary">AI screen:</span> {aiSummary}
-            </span>
-            <button onClick={clearAi} className="shrink-0 font-medium text-primary hover:underline">
-              Clear
-            </button>
-          </div>
-        ) : null}
 
         {/* Filters */}
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

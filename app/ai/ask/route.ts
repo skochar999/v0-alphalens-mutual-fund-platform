@@ -1,4 +1,5 @@
 import {
+  AI_FEATURES_ENABLED,
   aiConfigured,
   streamAnthropic,
   fetchFundsServer,
@@ -128,6 +129,10 @@ function selectRelevantFunds(
 }
 
 export async function POST(req: Request) {
+  // Shelved 2026-09-18 — see AI_FEATURES_ENABLED in lib/ai.ts.
+  if (!AI_FEATURES_ENABLED) {
+    return textResponse('Not found', 404)
+  }
   if (!aiConfigured()) {
     return textResponse("AlphaPicker's AI assistant isn't switched on yet — check back soon.")
   }

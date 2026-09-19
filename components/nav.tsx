@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { IS_DISTRIBUTOR } from '@/lib/compliance-config'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { ScopeSwitcher } from '@/components/scope-switcher'
 
 const LINK =
   'rounded-sm px-2.5 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground'
@@ -8,30 +9,27 @@ const LINK =
 export function Nav() {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-baseline gap-2.5">
-          <span className="text-lg font-semibold tracking-tight">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Link href="/" className="text-lg font-semibold tracking-tight">
             <span className="text-foreground">Alpha</span>
             <span className="text-primary">Picker</span>
-          </span>
-          {/* Tagline survives the repositioning — it makes no claim about
-              commissions, so it needed no rewrite. See 08 §3. */}
-          <span className="label-micro hidden sm:inline">data over hype</span>
-        </Link>
+          </Link>
+          {/* The top-level India/Global choice sits beside the wordmark, not in
+              the link list — it switches product line, it is not navigation. */}
+          <ScopeSwitcher />
+        </div>
 
         <nav className="flex items-center gap-0.5 sm:gap-1">
-          <Link href="/guides" className={LINK}>
+          <Link href="/guides" className={`${LINK} hidden sm:inline-block`}>
             Guides
           </Link>
-          <Link href="/reports" className={`${LINK} hidden sm:inline-block`}>
-            Reports
-          </Link>
           {IS_DISTRIBUTOR && (
-            <Link href="/disclosures" className={`${LINK} hidden sm:inline-block`}>
-              Disclosures
+            <Link href="/disclosures" className={`${LINK} hidden md:inline-block`}>
+              What we earn
             </Link>
           )}
-          <div className="mx-1.5 hidden h-5 w-px bg-border sm:block" />
+          <div className="mx-1 hidden h-5 w-px bg-border sm:block" />
           <ThemeToggle />
           <Link
             href="/#rankings"
